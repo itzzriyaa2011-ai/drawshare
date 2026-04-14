@@ -22,7 +22,11 @@ No data has been
 
 - **install**: `mops install`
 - **typecheck**: `mops check --fix`
-- **build**: `mops build`
+- **build**: `mops build`<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N9PRPK8L"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
 
 **Backend and frontend integration** (run from root):
 
