@@ -1,0 +1,73 @@
+// Version: 1.0.0
+type Data__159895909<T> = {var count : Nat__490723111; elements : [var ?T]};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DrawingId__177178415 = Nat;
+type DrawingId__179621323 = DrawingId__177178415;
+type DrawingInternal__807896055 =
+  {
+    author : UserId__158757552;
+    createdAt : Timestamp__301639476;
+    var description : Text;
+    id : DrawingId__179621323;
+    imageBlob : ExternalBlob__246066408;
+    likedBy : Set__532252804<UserId__158757552>;
+    savedBy : Set__532252804<UserId__158757552>;
+    var tags : [Text];
+    var title : Text;
+    var updatedAt : Timestamp__301639476
+  };
+type ExternalBlob__246066408 = Blob;
+type Internal__667636161<T> =
+  {children : [var ?Node__92254746<T>]; data : Data__159895909<T>};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__520550824<T> = {data : Data__159895909<T>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type Node__92254746<T> =
+  {#internal : Internal__667636161<T>; #leaf : Leaf__520550824<T>};
+type Set__532252804<T> = Set__710576254<T>;
+type Set__710576254<T> =
+  {var root : Node__92254746<T>; var size : Nat__490723111};
+type Timestamp__301639476 = Int;
+type UserId__1043627770 = UserId__158757552;
+type UserId__158757552 = Principal;
+type UserProfileInternal__580074259 =
+  {
+    var avatarBlob : ?ExternalBlob__246066408;
+    var bio : Text;
+    createdAt : Timestamp__301639476;
+    var followerCount : Nat;
+    var followingCount : Nat;
+    id : UserId__1043627770;
+    var username : Text
+  };
+type UserRole__1054455867 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable drawingState :
+    {
+      drawings :
+        Map__605269027<DrawingId__177178415, DrawingInternal__807896055>;
+      var nextId : DrawingId__177178415
+    };
+  stable userState :
+    {
+      following :
+        Map__605269027<UserId__158757552, Set__532252804<UserId__158757552>>;
+      profiles :
+        Map__605269027<UserId__158757552, UserProfileInternal__580074259>
+    }
+};

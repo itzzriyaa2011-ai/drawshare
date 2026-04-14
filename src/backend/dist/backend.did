@@ -1,0 +1,109 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = 
+ record {
+   avatarBlob: opt ExternalBlob;
+   bio: text;
+   createdAt: Timestamp;
+   followerCount: nat;
+   followingCount: nat;
+   id: UserId;
+   username: text;
+ };
+type UserId = principal;
+type UpdateProfileInput = 
+ record {
+   avatarBlob: opt ExternalBlob;
+   bio: text;
+   username: text;
+ };
+type UpdateDrawingInput = 
+ record {
+   description: text;
+   tags: vec text;
+   title: text;
+ };
+type Timestamp = int;
+type Page = 
+ record {
+   items: vec Drawing;
+   limit: nat;
+   offset: nat;
+   total: nat;
+ };
+type ExternalBlob = blob;
+type DrawingId = nat;
+type Drawing = 
+ record {
+   author: UserId;
+   createdAt: Timestamp;
+   description: text;
+   id: DrawingId;
+   imageBlob: ExternalBlob;
+   likeCount: nat;
+   savedCount: nat;
+   tags: vec text;
+   title: text;
+   updatedAt: Timestamp;
+ };
+type CreateDrawingInput = 
+ record {
+   description: text;
+   imageBlob: ExternalBlob;
+   tags: vec text;
+   title: text;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  deleteDrawing: (id: DrawingId) -> ();
+  followUser: (target: UserId) -> ();
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getDrawing: (id: DrawingId) -> (opt Drawing) query;
+  getLikedBy: (id: DrawingId) -> (vec UserId) query;
+  getSavedDrawings: (offset: nat, limit: nat) -> (Page) query;
+  getSuggestedDrawings: (limit: nat) -> (vec Drawing) query;
+  getTrendingDrawings: (limit: nat) -> (vec Drawing) query;
+  getUserProfile: (userId: UserId) -> (opt UserProfile) query;
+  isCallerAdmin: () -> (bool) query;
+  isFollowingUser: (target: UserId) -> (bool) query;
+  likeDrawing: (id: DrawingId) -> ();
+  listDrawings: (offset: nat, limit: nat) -> (Page) query;
+  listDrawingsByTag: (tag: text, offset: nat, limit: nat) -> (Page) query;
+  postDrawing: (input: CreateDrawingInput) -> (Drawing);
+  saveCallerUserProfile: (input: UpdateProfileInput) -> ();
+  saveDrawing: (id: DrawingId) -> ();
+  searchDrawings: (searchQuery: text, offset: nat, limit: nat) ->
+   (Page) query;
+  unfollowUser: (target: UserId) -> ();
+  unlikeDrawing: (id: DrawingId) -> ();
+  unsaveDrawing: (id: DrawingId) -> ();
+  updateDrawing: (id: DrawingId, input: UpdateDrawingInput) -> ();
+}

@@ -1,0 +1,21 @@
+{
+  "overview": "A Pinterest-style social platform for digital drawings where artists post, discover, like, save, download, and share artwork. Includes personalized suggestions and trending picks.",
+  "features": [
+    "Post and share digital drawings with title, description, and tags",
+    "Browse a community feed of recent and trending drawings",
+    "Like, save, download, and share drawings",
+    "Personalized drawing suggestions based on your saved collection",
+    "User profiles with posted drawings and saved collections",
+    "Filter and search by tag or artist name"
+  ],
+  "category": "social",
+  "tags": [
+    "drawings",
+    "art",
+    "social",
+    "gallery",
+    "sharing",
+    "creative"
+  ],
+  "last_updated": "2026-04-14T10:56:10.046Z"
+}
