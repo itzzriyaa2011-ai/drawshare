@@ -1,7 +1,8 @@
-import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, at as React, au as composeRefs, av as reactDomExports, aw as useComposedRefs, ax as ReactDOM, a as cn, ay as buttonVariants, l as useParams, u as useAuth, b as useQueryClient, L as Layout, S as Skeleton, f as Button, d as Link, B as Bookmark, h as ue } from "./index-D4tdokbz.js";
-import { B as Badge, H as Heart } from "./badge-DSGlaz1B.js";
-import { u as useBackend, a as useQuery, b as useMutation } from "./use-backend-CSYGU6gL.js";
-import { m as motion } from "./proxy-ID89ermQ.js";
+import { c as createLucideIcon, r as reactExports, k as useComposedRefs, j as jsxRuntimeExports, aw as ReactDOM, g as cn, ax as buttonVariants, ay as useParams, a as useNavigate, u as useAuth, L as Layout, S as Skeleton, B as Button, e as Link, m as ue } from "./index-Py_44o3M.js";
+import { P as Primitive, c as composeEventHandlers, f as dispatchDiscreteCustomEvent, u as useLayoutEffect2, a as useControllableState, g as createContext2, d as Presence, b as createContextScope, e as createSlot, h as createSlottable } from "./index-x7uG_jp_.js";
+import { a as useCallbackRef$1, u as useId } from "./index-DOdboGrt.js";
+import { k as usePost, a as useLikePost, b as useSavePost, i as useUnsavePost, l as useDeletePost } from "./use-posts-_6MsgZwc.js";
+import { m as motion, C as CircleUser, H as Heart, B as Bookmark } from "./proxy-e2KdTrn6.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -64,303 +65,6 @@ const __iconNode = [
   ["line", { x1: "14", x2: "14", y1: "11", y2: "17", key: "xtxkd" }]
 ];
 const Trash2 = createLucideIcon("trash-2", __iconNode);
-function createContext2(rootComponentName, defaultContext) {
-  const Context = reactExports.createContext(defaultContext);
-  const Provider = (props) => {
-    const { children, ...context } = props;
-    const value = reactExports.useMemo(() => context, Object.values(context));
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-  };
-  Provider.displayName = rootComponentName + "Provider";
-  function useContext2(consumerName) {
-    const context = reactExports.useContext(Context);
-    if (context) return context;
-    if (defaultContext !== void 0) return defaultContext;
-    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-  }
-  return [Provider, useContext2];
-}
-function createContextScope(scopeName, createContextScopeDeps = []) {
-  let defaultContexts = [];
-  function createContext3(rootComponentName, defaultContext) {
-    const BaseContext = reactExports.createContext(defaultContext);
-    const index = defaultContexts.length;
-    defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      var _a;
-      const { scope, children, ...context } = props;
-      const Context = ((_a = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a[index]) || BaseContext;
-      const value = reactExports.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
-    Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      var _a;
-      const Context = ((_a = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a[index]) || BaseContext;
-      const context = reactExports.useContext(Context);
-      if (context) return context;
-      if (defaultContext !== void 0) return defaultContext;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-    }
-    return [Provider, useContext2];
-  }
-  const createScope = () => {
-    const scopeContexts = defaultContexts.map((defaultContext) => {
-      return reactExports.createContext(defaultContext);
-    });
-    return function useScope(scope) {
-      const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
-      return reactExports.useMemo(
-        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
-        [scope, contexts]
-      );
-    };
-  };
-  createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
-}
-function composeContextScopes(...scopes) {
-  const baseScope = scopes[0];
-  if (scopes.length === 1) return baseScope;
-  const createScope = () => {
-    const scopeHooks = scopes.map((createScope2) => ({
-      useScope: createScope2(),
-      scopeName: createScope2.scopeName
-    }));
-    return function useComposedScopes(overrideScopes) {
-      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
-        const scopeProps = useScope(overrideScopes);
-        const currentScope = scopeProps[`__scope${scopeName}`];
-        return { ...nextScopes2, ...currentScope };
-      }, {});
-      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
-  createScope.scopeName = baseScope.scopeName;
-  return createScope;
-}
-function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
-  return function handleEvent(event) {
-    originalEventHandler == null ? void 0 : originalEventHandler(event);
-    if (checkForDefaultPrevented === false || !event.defaultPrevented) {
-      return ourEventHandler == null ? void 0 : ourEventHandler(event);
-    }
-  };
-}
-var useLayoutEffect2 = (globalThis == null ? void 0 : globalThis.document) ? reactExports.useLayoutEffect : () => {
-};
-var useReactId = React[" useId ".trim().toString()] || (() => void 0);
-var count$1 = 0;
-function useId(deterministicId) {
-  const [id, setId] = reactExports.useState(useReactId());
-  useLayoutEffect2(() => {
-    setId((reactId) => reactId ?? String(count$1++));
-  }, [deterministicId]);
-  return deterministicId || (id ? `radix-${id}` : "");
-}
-var useInsertionEffect = React[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
-function useControllableState({
-  prop,
-  defaultProp,
-  onChange = () => {
-  },
-  caller
-}) {
-  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
-    defaultProp,
-    onChange
-  });
-  const isControlled = prop !== void 0;
-  const value = isControlled ? prop : uncontrolledProp;
-  {
-    const isControlledRef = reactExports.useRef(prop !== void 0);
-    reactExports.useEffect(() => {
-      const wasControlled = isControlledRef.current;
-      if (wasControlled !== isControlled) {
-        const from = wasControlled ? "controlled" : "uncontrolled";
-        const to = isControlled ? "controlled" : "uncontrolled";
-        console.warn(
-          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
-        );
-      }
-      isControlledRef.current = isControlled;
-    }, [isControlled, caller]);
-  }
-  const setValue = reactExports.useCallback(
-    (nextValue) => {
-      var _a;
-      if (isControlled) {
-        const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
-        if (value2 !== prop) {
-          (_a = onChangeRef.current) == null ? void 0 : _a.call(onChangeRef, value2);
-        }
-      } else {
-        setUncontrolledProp(nextValue);
-      }
-    },
-    [isControlled, prop, setUncontrolledProp, onChangeRef]
-  );
-  return [value, setValue];
-}
-function useUncontrolledState({
-  defaultProp,
-  onChange
-}) {
-  const [value, setValue] = reactExports.useState(defaultProp);
-  const prevValueRef = reactExports.useRef(value);
-  const onChangeRef = reactExports.useRef(onChange);
-  useInsertionEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
-  reactExports.useEffect(() => {
-    var _a;
-    if (prevValueRef.current !== value) {
-      (_a = onChangeRef.current) == null ? void 0 : _a.call(onChangeRef, value);
-      prevValueRef.current = value;
-    }
-  }, [value, prevValueRef]);
-  return [value, setValue, onChangeRef];
-}
-function isFunction(value) {
-  return typeof value === "function";
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$1(children);
-      const props2 = mergeProps(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
-  };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
-  return Slottable2;
-}
-function isSlottable(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
-}
-function mergeProps(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$1(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-var NODES = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive = NODES.reduce((primitive, node) => {
-  const Slot2 = /* @__PURE__ */ createSlot(`Primitive.${node}`);
-  const Node2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot2 : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node2.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node2 };
-}, {});
-function dispatchDiscreteCustomEvent(target, event) {
-  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
-}
-function useCallbackRef$1(callback) {
-  const callbackRef = reactExports.useRef(callback);
-  reactExports.useEffect(() => {
-    callbackRef.current = callback;
-  });
-  return reactExports.useMemo(() => (...args) => {
-    var _a;
-    return (_a = callbackRef.current) == null ? void 0 : _a.call(callbackRef, ...args);
-  }, []);
-}
 function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis == null ? void 0 : globalThis.document) {
   const onEscapeKeyDown = useCallbackRef$1(onEscapeKeyDownProp);
   reactExports.useEffect(() => {
@@ -784,129 +488,6 @@ var Portal$1 = reactExports.forwardRef((props, forwardedRef) => {
   return container ? ReactDOM.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
 Portal$1.displayName = PORTAL_NAME$2;
-function useStateMachine(initialState, machine) {
-  return reactExports.useReducer((state, event) => {
-    const nextState = machine[state][event];
-    return nextState ?? state;
-  }, initialState);
-}
-var Presence = (props) => {
-  const { present, children } = props;
-  const presence = usePresence(present);
-  const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
-  const ref = useComposedRefs(presence.ref, getElementRef(child));
-  const forceMount = typeof children === "function";
-  return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
-};
-Presence.displayName = "Presence";
-function usePresence(present) {
-  const [node, setNode] = reactExports.useState();
-  const stylesRef = reactExports.useRef(null);
-  const prevPresentRef = reactExports.useRef(present);
-  const prevAnimationNameRef = reactExports.useRef("none");
-  const initialState = present ? "mounted" : "unmounted";
-  const [state, send] = useStateMachine(initialState, {
-    mounted: {
-      UNMOUNT: "unmounted",
-      ANIMATION_OUT: "unmountSuspended"
-    },
-    unmountSuspended: {
-      MOUNT: "mounted",
-      ANIMATION_END: "unmounted"
-    },
-    unmounted: {
-      MOUNT: "mounted"
-    }
-  });
-  reactExports.useEffect(() => {
-    const currentAnimationName = getAnimationName(stylesRef.current);
-    prevAnimationNameRef.current = state === "mounted" ? currentAnimationName : "none";
-  }, [state]);
-  useLayoutEffect2(() => {
-    const styles = stylesRef.current;
-    const wasPresent = prevPresentRef.current;
-    const hasPresentChanged = wasPresent !== present;
-    if (hasPresentChanged) {
-      const prevAnimationName = prevAnimationNameRef.current;
-      const currentAnimationName = getAnimationName(styles);
-      if (present) {
-        send("MOUNT");
-      } else if (currentAnimationName === "none" || (styles == null ? void 0 : styles.display) === "none") {
-        send("UNMOUNT");
-      } else {
-        const isAnimating = prevAnimationName !== currentAnimationName;
-        if (wasPresent && isAnimating) {
-          send("ANIMATION_OUT");
-        } else {
-          send("UNMOUNT");
-        }
-      }
-      prevPresentRef.current = present;
-    }
-  }, [present, send]);
-  useLayoutEffect2(() => {
-    if (node) {
-      let timeoutId;
-      const ownerWindow = node.ownerDocument.defaultView ?? window;
-      const handleAnimationEnd = (event) => {
-        const currentAnimationName = getAnimationName(stylesRef.current);
-        const isCurrentAnimation = currentAnimationName.includes(CSS.escape(event.animationName));
-        if (event.target === node && isCurrentAnimation) {
-          send("ANIMATION_END");
-          if (!prevPresentRef.current) {
-            const currentFillMode = node.style.animationFillMode;
-            node.style.animationFillMode = "forwards";
-            timeoutId = ownerWindow.setTimeout(() => {
-              if (node.style.animationFillMode === "forwards") {
-                node.style.animationFillMode = currentFillMode;
-              }
-            });
-          }
-        }
-      };
-      const handleAnimationStart = (event) => {
-        if (event.target === node) {
-          prevAnimationNameRef.current = getAnimationName(stylesRef.current);
-        }
-      };
-      node.addEventListener("animationstart", handleAnimationStart);
-      node.addEventListener("animationcancel", handleAnimationEnd);
-      node.addEventListener("animationend", handleAnimationEnd);
-      return () => {
-        ownerWindow.clearTimeout(timeoutId);
-        node.removeEventListener("animationstart", handleAnimationStart);
-        node.removeEventListener("animationcancel", handleAnimationEnd);
-        node.removeEventListener("animationend", handleAnimationEnd);
-      };
-    } else {
-      send("ANIMATION_END");
-    }
-  }, [node, send]);
-  return {
-    isPresent: ["mounted", "unmountSuspended"].includes(state),
-    ref: reactExports.useCallback((node2) => {
-      stylesRef.current = node2 ? getComputedStyle(node2) : null;
-      setNode(node2);
-    }, [])
-  };
-}
-function getAnimationName(styles) {
-  return (styles == null ? void 0 : styles.animationName) || "none";
-}
-function getElementRef(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
 var count = 0;
 function useFocusGuards() {
   reactExports.useEffect(() => {
@@ -1791,7 +1372,7 @@ var DialogOverlay = reactExports.forwardRef(
   }
 );
 DialogOverlay.displayName = OVERLAY_NAME$1;
-var Slot = /* @__PURE__ */ createSlot("DialogOverlay.RemoveScroll");
+var Slot = createSlot("DialogOverlay.RemoveScroll");
 var DialogOverlayImpl = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, ...overlayProps } = props;
@@ -2055,7 +1636,7 @@ var AlertDialogOverlay$1 = reactExports.forwardRef(
 AlertDialogOverlay$1.displayName = OVERLAY_NAME;
 var CONTENT_NAME = "AlertDialogContent";
 var [AlertDialogContentProvider, useAlertDialogContentContext] = createAlertDialogContext(CONTENT_NAME);
-var Slottable = /* @__PURE__ */ createSlottable("AlertDialogContent");
+var Slottable = createSlottable("AlertDialogContent");
 var AlertDialogContent$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeAlertDialog, children, ...contentProps } = props;
@@ -2285,171 +1866,56 @@ function AlertDialogCancel({
     }
   );
 }
-function DrawingDetailPage() {
-  var _a, _b;
-  const { id } = useParams({ from: "/drawing/$id" });
-  const { actor, isFetching } = useBackend();
+function PostDetailPage() {
+  const { id } = useParams({ from: "/post/$id" });
+  const navigate = useNavigate();
   const { isAuthenticated, identity } = useAuth();
-  const queryClient = useQueryClient();
-  const drawingId = BigInt(id);
-  const { data: drawing, isLoading: isDrawingLoading } = useQuery({
-    queryKey: ["drawing", id],
-    queryFn: async () => {
-      if (!actor) return null;
-      return actor.getDrawing(drawingId);
-    },
-    enabled: !!actor && !isFetching
-  });
-  const { data: author } = useQuery({
-    queryKey: ["userProfile", drawing == null ? void 0 : drawing.author.toText()],
-    queryFn: async () => {
-      if (!actor || !drawing) return null;
-      return actor.getUserProfile(drawing.author);
-    },
-    enabled: !!actor && !!drawing
-  });
-  const { data: likedBy } = useQuery({
-    queryKey: ["likedBy", id],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.getLikedBy(drawingId);
-    },
-    enabled: !!actor && !isFetching
-  });
+  const postId = BigInt(id);
+  const { data: post, isLoading } = usePost(postId);
+  const likeMutation = useLikePost();
+  const saveMutation = useSavePost();
+  const unsaveMutation = useUnsavePost();
+  const deleteMutation = useDeletePost();
+  const [isLiked, setIsLiked] = reactExports.useState(false);
+  const [isSaved, setIsSaved] = reactExports.useState(false);
   const callerPrincipal = identity == null ? void 0 : identity.getPrincipal();
-  const isLiked = !!(callerPrincipal && (likedBy == null ? void 0 : likedBy.some((p) => p.toText() === callerPrincipal.toText())));
-  const isAuthor = !!(callerPrincipal && drawing && drawing.author.toText() === callerPrincipal.toText());
-  const { data: savedPage } = useQuery({
-    queryKey: ["savedDrawings", "check", id],
-    queryFn: async () => {
-      if (!actor || !isAuthenticated) return null;
-      return actor.getSavedDrawings(0n, 200n);
-    },
-    enabled: !!actor && isAuthenticated
-  });
-  const isSaved = !!((_a = savedPage == null ? void 0 : savedPage.items) == null ? void 0 : _a.some((d) => d.id === drawingId));
-  const likeMutation = useMutation({
-    mutationFn: async () => {
-      if (!actor) return;
-      if (isLiked) {
-        await actor.unlikeDrawing(drawingId);
-      } else {
-        await actor.likeDrawing(drawingId);
-      }
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["drawing", id] });
-      await queryClient.cancelQueries({ queryKey: ["likedBy", id] });
-      const prevDrawing = queryClient.getQueryData(["drawing", id]);
-      const prevLikedBy = queryClient.getQueryData(["likedBy", id]);
-      queryClient.setQueryData(["drawing", id], (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          likeCount: isLiked ? old.likeCount - 1n : old.likeCount + 1n
-        };
-      });
-      queryClient.setQueryData(["likedBy", id], (old) => {
-        if (!old || !callerPrincipal) return old;
-        if (isLiked) {
-          return old.filter((p) => p.toText() !== callerPrincipal.toText());
-        }
-        return [...old, callerPrincipal];
-      });
-      return { prevDrawing, prevLikedBy };
-    },
-    onError: (_err, _vars, context) => {
-      if ((context == null ? void 0 : context.prevDrawing) !== void 0)
-        queryClient.setQueryData(["drawing", id], context.prevDrawing);
-      if ((context == null ? void 0 : context.prevLikedBy) !== void 0)
-        queryClient.setQueryData(["likedBy", id], context.prevLikedBy);
-      ue.error("Failed to update like. Please try again.");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["drawing", id] });
-      queryClient.invalidateQueries({ queryKey: ["likedBy", id] });
-    }
-  });
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      if (!actor) return;
-      if (isSaved) {
-        await actor.unsaveDrawing(drawingId);
-      } else {
-        await actor.saveDrawing(drawingId);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["savedDrawings"] });
-      ue.success(
-        isSaved ? "Removed from saved" : "Drawing saved to your collection"
-      );
-    },
-    onError: () => {
-      ue.error("Failed to update save. Please try again.");
-    }
-  });
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
-      if (!actor) return;
-      await actor.deleteDrawing(drawingId);
-    },
-    onSuccess: () => {
-      ue.success("Drawing deleted.");
-      queryClient.invalidateQueries({ queryKey: ["drawings"] });
-    },
-    onError: () => {
-      ue.error("Failed to delete drawing.");
-    }
-  });
-  const handleDownload = async () => {
-    if (!drawing) return;
-    try {
-      const url = drawing.imageBlob.getDirectURL();
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = `${drawing.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-      ue.success("Download started!");
-    } catch {
-      ue.error("Failed to download image.");
-    }
-  };
-  const handleShare = () => {
+  const isAuthor = !!(callerPrincipal && (post == null ? void 0 : post.authorId) && post.authorId.toString() === callerPrincipal.toText());
+  function handleDownload() {
+    if (!post) return;
+    const a = document.createElement("a");
+    a.href = post.imageUrl;
+    a.download = `${post.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.jpg`;
+    a.click();
+    ue.success("Download started!");
+  }
+  function handleShare() {
     navigator.clipboard.writeText(window.location.href);
     ue.success("Link copied to clipboard!");
-  };
-  if (isDrawingLoading || isFetching) {
+  }
+  async function handleDelete() {
+    if (!post) return;
+    await deleteMutation.mutateAsync(post.id);
+    ue.success("Post deleted.");
+    navigate({ to: "/" });
+  }
+  if (isLoading) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
-        className: "max-w-5xl mx-auto px-4 py-8",
-        "data-ocid": "drawing_detail.loading_state",
+        className: "max-w-5xl mx-auto py-8",
+        "data-ocid": "post_detail.loading_state",
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-24 mb-8 rounded-full" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid lg:grid-cols-[1fr_380px] gap-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid lg:grid-cols-[1fr_360px] gap-10", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "aspect-[4/3] rounded-2xl w-full" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-5", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-9 w-3/4 rounded-xl" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-full rounded" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-5/6 rounded" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-2/3 rounded" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2 pt-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-7 w-20 rounded-full" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-7 w-20 rounded-full" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-7 w-24 rounded-full" })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-14 w-full rounded-xl mt-4" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3 pt-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-9 w-3/4" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-full" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-5/6" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full rounded-xl mt-4" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 flex-1 rounded-xl" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 flex-1 rounded-xl" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 w-10 rounded-xl" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 w-10 rounded-xl" })
               ] })
             ] })
@@ -2458,31 +1924,26 @@ function DrawingDetailPage() {
       }
     ) });
   }
-  if (!drawing) {
+  if (!post) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         className: "flex flex-col items-center justify-center py-32 text-center gap-5",
-        "data-ocid": "drawing_detail.error_state",
+        "data-ocid": "post_detail.error_state",
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-6xl", children: "🎨" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "font-display text-2xl font-bold text-foreground", children: "Drawing not found" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground max-w-xs", children: "This drawing may have been removed or the link is incorrect." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              asChild: true,
-              variant: "default",
-              "data-ocid": "drawing_detail.back_button",
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: "/", children: "Back to Gallery" })
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-6xl", children: "📸" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "font-display text-2xl font-bold", children: "Post not found" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground max-w-xs", children: "This post may have been removed or the link is incorrect." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { asChild: true, variant: "default", "data-ocid": "post_detail.back_button", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: "/", children: "Back to Feed" }) })
         ]
       }
     ) });
   }
-  const likeCount = Number(drawing.likeCount);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-5xl mx-auto px-4 py-8", children: [
+  const authorProfilePath = !post.isAnonymous && post.authorId ? {
+    to: "/profile/$id",
+    params: { id: post.authorId.toString() }
+  } : null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-5xl mx-auto py-8", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       motion.div,
       {
@@ -2490,18 +1951,18 @@ function DrawingDetailPage() {
         animate: { opacity: 1, x: 0 },
         transition: { duration: 0.25 },
         className: "mb-8",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
           Button,
           {
-            asChild: true,
             variant: "ghost",
             size: "sm",
             className: "gap-2 text-muted-foreground hover:text-foreground -ml-2",
-            "data-ocid": "drawing_detail.back_button",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", children: [
+            onClick: () => history.back(),
+            "data-ocid": "post_detail.back_button",
+            children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowLeft, { size: 15 }),
-              "Back to Gallery"
-            ] })
+              "Back"
+            ]
           }
         )
       }
@@ -2509,8 +1970,8 @@ function DrawingDetailPage() {
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
-        className: "grid lg:grid-cols-[1fr_380px] gap-10 items-start",
-        "data-ocid": "drawing_detail.page",
+        className: "grid lg:grid-cols-[1fr_360px] gap-10 items-start",
+        "data-ocid": "post_detail.page",
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             motion.div,
@@ -2518,13 +1979,13 @@ function DrawingDetailPage() {
               initial: { opacity: 0, scale: 0.98 },
               animate: { opacity: 1, scale: 1 },
               transition: { duration: 0.4, ease: "easeOut" },
-              className: "rounded-2xl overflow-hidden border border-border bg-card shadow-sm",
+              className: "rounded-2xl overflow-hidden border border-border bg-card shadow-subtle",
               children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "img",
                 {
-                  src: drawing.imageBlob.getDirectURL(),
-                  alt: drawing.title,
-                  className: "w-full h-auto object-contain max-h-[75vh]"
+                  src: post.imageUrl,
+                  alt: post.title,
+                  className: "w-full h-auto object-contain max-h-[80vh]"
                 }
               )
             }
@@ -2535,61 +1996,50 @@ function DrawingDetailPage() {
               initial: { opacity: 0, y: 16 },
               animate: { opacity: 1, y: 0 },
               transition: { duration: 0.4, delay: 0.1, ease: "easeOut" },
-              className: "flex flex-col gap-6",
+              className: "flex flex-col gap-5",
               children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "font-display text-2xl font-bold text-foreground mb-3 leading-tight", children: drawing.title }),
-                  drawing.description && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground leading-relaxed text-sm", children: drawing.description })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "font-display text-2xl font-bold text-foreground mb-2 leading-tight", children: post.title }),
+                  post.caption && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground leading-relaxed text-sm", children: post.caption })
                 ] }),
-                drawing.tags.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "div",
-                  {
-                    className: "flex flex-wrap gap-2",
-                    "data-ocid": "drawing_detail.tags",
-                    children: drawing.tags.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                      Badge,
-                      {
-                        variant: "secondary",
-                        className: "rounded-full px-3 py-1 text-xs cursor-default hover:bg-primary/10 hover:text-primary transition-colors",
-                        children: [
-                          "#",
-                          tag
-                        ]
-                      },
-                      tag
-                    ))
-                  }
-                ),
-                author && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                authorProfilePath ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
                   Link,
                   {
-                    to: "/profile/$id",
-                    params: { id: drawing.author.toText() },
+                    ...authorProfilePath,
                     className: "flex items-center gap-3 group p-3 rounded-xl border border-border bg-card hover:border-primary/40 hover:bg-primary/5 transition-all",
-                    "data-ocid": "drawing_detail.author_link",
+                    "data-ocid": "post_detail.author_link",
                     children: [
-                      author.avatarBlob ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "img",
-                        {
-                          src: author.avatarBlob.getDirectURL(),
-                          alt: author.username,
-                          className: "w-11 h-11 rounded-full object-cover ring-2 ring-border group-hover:ring-primary/40 transition-all"
-                        }
-                      ) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-border group-hover:ring-primary/40 transition-all flex-shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary font-bold text-lg", children: (_b = author.username[0]) == null ? void 0 : _b.toUpperCase() }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUser, { size: 20, className: "text-primary" }) }),
                       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-foreground group-hover:text-primary transition-colors truncate text-sm", children: author.username }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-muted-foreground", children: [
-                          Number(author.followerCount).toLocaleString(),
-                          " followers"
-                        ] })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-foreground text-sm truncate", children: post.authorName ?? "Riartsy User" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: new Date(
+                          Number(post.createdAt) / 1e6
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric"
+                        }) })
                       ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        ArrowLeft,
-                        {
-                          size: 14,
-                          className: "ml-auto rotate-180 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0"
-                        }
-                      )
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-auto text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity", children: "View profile →" })
+                    ]
+                  }
+                ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "div",
+                  {
+                    className: "flex items-center gap-3 p-3 rounded-xl border border-border bg-card",
+                    "data-ocid": "post_detail.author_anonymous",
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUser, { size: 20, className: "text-muted-foreground" }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-foreground text-sm", children: "Anonymous" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: new Date(
+                          Number(post.createdAt) / 1e6
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric"
+                        }) })
+                      ] })
                     ]
                   }
                 ),
@@ -2597,34 +2047,53 @@ function DrawingDetailPage() {
                   "div",
                   {
                     className: "flex items-center gap-2",
-                    "data-ocid": "drawing_detail.actions",
+                    "data-ocid": "post_detail.actions",
                     children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsxs(
                         Button,
                         {
-                          variant: isLiked ? "default" : "outline",
-                          className: "gap-2 flex-1 transition-all",
-                          onClick: () => isAuthenticated && likeMutation.mutate(),
+                          variant: "outline",
+                          className: "gap-2 flex-1",
+                          onClick: () => {
+                            if (!isAuthenticated) return;
+                            setIsLiked((prev) => !prev);
+                            likeMutation.mutate(post.id);
+                          },
                           disabled: !isAuthenticated || likeMutation.isPending,
-                          "data-ocid": "drawing_detail.like_button",
+                          "data-ocid": "post_detail.like_button",
                           children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(Heart, { size: 15, className: isLiked ? "fill-current" : "" }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: likeCount.toLocaleString() }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden sm:inline", children: isLiked ? "Liked" : "Like" })
+                            /* @__PURE__ */ jsxRuntimeExports.jsx(
+                              Heart,
+                              {
+                                size: 15,
+                                className: isLiked ? "text-red-500 fill-red-500" : ""
+                              }
+                            ),
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: String(post.likeCount) }),
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden sm:inline", children: "Like" })
                           ]
                         }
                       ),
                       /* @__PURE__ */ jsxRuntimeExports.jsxs(
                         Button,
                         {
-                          variant: isSaved ? "default" : "outline",
-                          className: "gap-2 flex-1 transition-all",
-                          onClick: () => isAuthenticated && saveMutation.mutate(),
-                          disabled: !isAuthenticated || saveMutation.isPending,
-                          "data-ocid": "drawing_detail.save_button",
+                          variant: "outline",
+                          className: "gap-2 flex-1",
+                          onClick: () => {
+                            if (!isAuthenticated) return;
+                            setIsSaved((prev) => !prev);
+                            if (isSaved) {
+                              unsaveMutation.mutate(post.id);
+                            } else {
+                              saveMutation.mutate(post.id);
+                            }
+                          },
+                          disabled: !isAuthenticated || saveMutation.isPending || unsaveMutation.isPending,
+                          "data-ocid": "post_detail.save_button",
                           children: [
-                            isSaved ? /* @__PURE__ */ jsxRuntimeExports.jsx(BookmarkCheck, { size: 15 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Bookmark, { size: 15 }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden sm:inline", children: isSaved ? "Saved" : "Save" })
+                            isSaved ? /* @__PURE__ */ jsxRuntimeExports.jsx(BookmarkCheck, { size: 15, className: "text-accent" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Bookmark, { size: 15 }),
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: String(post.savedCount) }),
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden sm:inline", children: "Save" })
                           ]
                         }
                       ),
@@ -2634,9 +2103,8 @@ function DrawingDetailPage() {
                           variant: "outline",
                           size: "icon",
                           onClick: handleDownload,
-                          "aria-label": "Download drawing",
-                          "data-ocid": "drawing_detail.download_button",
-                          className: "flex-shrink-0",
+                          "aria-label": "Download photo",
+                          "data-ocid": "post_detail.download_button",
                           children: /* @__PURE__ */ jsxRuntimeExports.jsx(Download, { size: 15 })
                         }
                       ),
@@ -2646,42 +2114,41 @@ function DrawingDetailPage() {
                           variant: "outline",
                           size: "icon",
                           onClick: handleShare,
-                          "aria-label": "Share drawing",
-                          "data-ocid": "drawing_detail.share_button",
-                          className: "flex-shrink-0",
+                          "aria-label": "Share post",
+                          "data-ocid": "post_detail.share_button",
                           children: /* @__PURE__ */ jsxRuntimeExports.jsx(Share2, { size: 15 })
                         }
                       )
                     ]
                   }
                 ),
-                !isAuthenticated && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 text-center", children: "Sign in to like, save, and download drawings." }),
+                !isAuthenticated && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 text-center", children: "Sign in to like and save photos." }),
                 isAuthor && /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialog, { children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogTrigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
                     Button,
                     {
                       variant: "outline",
-                      className: "gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:border-destructive/60 w-full mt-2",
-                      "data-ocid": "drawing_detail.delete_button",
+                      className: "gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 w-full",
+                      "data-ocid": "post_detail.delete_button",
                       children: [
                         /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 15 }),
-                        "Delete Drawing"
+                        "Delete Post"
                       ]
                     }
                   ) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogContent, { "data-ocid": "drawing_detail.dialog", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogContent, { "data-ocid": "post_detail.dialog", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogHeader, { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogTitle, { children: "Delete this drawing?" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogDescription, { children: "This action cannot be undone. The drawing will be permanently removed from the gallery." })
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogTitle, { children: "Delete this post?" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogDescription, { children: "This action cannot be undone. The photo will be permanently removed." })
                     ] }),
                     /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogFooter, { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogCancel, { "data-ocid": "drawing_detail.cancel_button", children: "Cancel" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogCancel, { "data-ocid": "post_detail.cancel_button", children: "Cancel" }),
                       /* @__PURE__ */ jsxRuntimeExports.jsx(
                         AlertDialogAction,
                         {
                           className: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-                          onClick: () => deleteMutation.mutate(),
-                          "data-ocid": "drawing_detail.confirm_button",
+                          onClick: handleDelete,
+                          "data-ocid": "post_detail.confirm_button",
                           children: "Delete"
                         }
                       )
@@ -2690,16 +2157,13 @@ function DrawingDetailPage() {
                 ] }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-muted-foreground border-t border-border pt-4 flex justify-between", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                    Number(drawing.savedCount).toLocaleString(),
+                    String(post.savedCount),
                     " saves"
                   ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: new Date(
-                    Number(drawing.createdAt) / 1e6
-                  ).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                  }) })
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                    String(post.likeCount),
+                    " likes"
+                  ] })
                 ] })
               ]
             }
@@ -2710,5 +2174,5 @@ function DrawingDetailPage() {
   ] }) });
 }
 export {
-  DrawingDetailPage as default
+  PostDetailPage as default
 };

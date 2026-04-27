@@ -2,84 +2,89 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Camera, LogIn, Save, UserRound } from "lucide-react";
-import { useRef, useState } from "react";
+import {
+  Bookmark,
+  Camera,
+  Grid3X3,
+  LogIn,
+  Save,
+  UserCircle,
+} from "lucide-react";
+import { motion } from "motion/react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ExternalBlob } from "../backend";
-import { DrawingCard } from "../components/DrawingCard";
 import { Layout } from "../components/Layout";
+import { PostCard } from "../components/PostCard";
 import { useAuth } from "../hooks/use-auth";
-import { useBackend } from "../hooks/use-backend";
+import {
+  useExplorePosts,
+  useLikePost,
+  useSavedPosts,
+  useUnsavePost,
+} from "../hooks/use-posts";
+import { useMyProfile, useUpdateProfile } from "../hooks/use-user";
 
 export default function MyProfilePage() {
-  const { actor, isFetching } = useBackend();
-  const { isAuthenticated, login } = useAuth();
-  const queryClient = useQueryClient();
+  const { isAuthenticated, login, identity } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["me"],
-    queryFn: async () => {
-      if (!actor) return null;
-      return actor.getCallerUserProfile();
-    },
-    enabled: !!actor && !isFetching && isAuthenticated,
-  });
+  const { data: profile, isLoading } = useMyProfile();
+  const { data: savedPosts, isLoading: savedLoading } = useSavedPosts();
+  const { data: allPosts, isLoading: postsLoading } = useExplorePosts(0n);
+  const updateProfile = useUpdateProfile();
+  const unsavePost = useUnsavePost();
+  const likeMutation = useLikePost();
 
-  const { data: savedDrawings, isLoading: savedLoading } = useQuery({
-    queryKey: ["drawings", "my-saved"],
-    queryFn: async () => {
-      if (!actor) return { items: [], total: 0n, offset: 0n, limit: 8n };
-      return actor.getSavedDrawings(0n, 8n);
-    },
-    enabled: !!actor && !isFetching && isAuthenticated,
-  });
-
-  const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
+  const [isAnonymousByDefault, setIsAnonymousByDefault] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
 
+  // Sync form state once profile loads
   if (profile && !initialized) {
-    setUsername(profile.username);
+    setDisplayName(profile.displayName);
     setBio(profile.bio);
-    if (profile.avatarBlob) setAvatarPreview(profile.avatarBlob.getDirectURL());
+    setIsAnonymousByDefault(profile.isAnonymousByDefault);
+    if (profile.avatarUrl) setAvatarPreview(profile.avatarUrl);
     setInitialized(true);
   }
 
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      if (!actor) throw new Error("No actor");
+  // Filter own posts from the explore feed
+  const myPrincipal = identity?.getPrincipal().toText();
+  const myPosts = useMemo(() => {
+    if (!allPosts || !myPrincipal) return [];
+    return allPosts.filter((p) => p.authorId?.toString() === myPrincipal);
+  }, [allPosts, myPrincipal]);
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    try {
       let avatarBlob: ExternalBlob | undefined;
       if (avatarFile) {
         const buffer = new Uint8Array(await avatarFile.arrayBuffer());
         avatarBlob = ExternalBlob.fromBytes(buffer);
       }
-      await actor.saveCallerUserProfile({
-        username: username.trim(),
+      await updateProfile.mutateAsync({
+        displayName: displayName.trim(),
         bio: bio.trim(),
         avatarBlob,
+        isAnonymousByDefault,
       });
-    },
-    onSuccess: () => {
       toast.success("Profile saved!");
-      queryClient.invalidateQueries({ queryKey: ["me"] });
-    },
-    onError: () => toast.error("Failed to save profile."),
-  });
+      setAvatarFile(null);
+    } catch {
+      toast.error("Failed to save profile.");
+    }
+  }
 
-  const unsaveMutation = useMutation({
-    mutationFn: async (id: bigint) => {
-      if (actor) await actor.unsaveDrawing(id);
-    },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["drawings", "my-saved"] }),
-  });
-
+  // Auth gate
   if (!isAuthenticated) {
     return (
       <Layout>
@@ -88,13 +93,13 @@ export default function MyProfilePage() {
           data-ocid="my_profile.auth_gate"
         >
           <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-            <UserRound size={28} className="text-muted-foreground" />
+            <Camera size={28} className="text-muted-foreground" />
           </div>
           <h2 className="font-display text-xl font-bold mb-2">
-            Sign in to view your profile
+            Sign in to manage your profile
           </h2>
           <p className="text-muted-foreground text-sm mb-6">
-            Manage your artist profile and saved drawings.
+            Customize your profile, bio, and saved photos.
           </p>
           <Button
             onClick={login}
@@ -108,11 +113,12 @@ export default function MyProfilePage() {
     );
   }
 
+  // Loading
   if (isLoading) {
     return (
       <Layout>
         <div
-          className="max-w-2xl mx-auto space-y-6"
+          className="max-w-3xl mx-auto space-y-6"
           data-ocid="my_profile.loading_state"
         >
           <Skeleton className="h-8 w-40" />
@@ -127,28 +133,60 @@ export default function MyProfilePage() {
     );
   }
 
-  const displayInitial = username[0]?.toUpperCase() ?? "?";
+  const displayInitial = displayName[0]?.toUpperCase() ?? "?";
 
   return (
     <Layout>
-      <div className="max-w-2xl mx-auto space-y-8">
-        {/* Page heading */}
-        <div>
+      <div className="max-w-3xl mx-auto space-y-8">
+        {/* Page title */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+        >
           <h1 className="font-display text-2xl font-bold text-foreground mb-1">
             My Profile
           </h1>
           <p className="text-muted-foreground text-sm">
             Manage how you appear on riartsy
           </p>
-        </div>
+        </motion.div>
+
+        {/* Profile stats strip */}
+        {profile && (
+          <div className="grid grid-cols-3 gap-4">
+            {[
+              { label: "Posts", value: String(profile.postCount) },
+              { label: "Followers", value: String(profile.followerCount) },
+              { label: "Following", value: String(profile.followingCount) },
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                className="bg-card border border-border rounded-xl py-4 px-3 text-center"
+              >
+                <div className="font-display text-2xl font-bold text-foreground">
+                  {value}
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Edit form */}
-        <div className="bg-card rounded-2xl border border-border p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="bg-card rounded-2xl border border-border p-6"
+        >
+          <h2 className="font-display font-semibold text-foreground text-base mb-5">
+            Edit Profile
+          </h2>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              saveMutation.mutate();
-            }}
+            onSubmit={handleSave}
             className="space-y-6"
             data-ocid="my_profile.form"
           >
@@ -161,28 +199,28 @@ export default function MyProfilePage() {
                   onClick={() => fileInputRef.current?.click()}
                   className="relative group shrink-0"
                   aria-label="Change profile picture"
-                  data-ocid="my_profile.upload_avatar_button"
+                  data-ocid="my_profile.upload_button"
                 >
-                  {avatarPreview ? (
-                    <img
-                      src={avatarPreview}
-                      alt="Avatar"
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
+                    {avatarPreview ? (
+                      <img
+                        src={avatarPreview}
+                        alt="Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
                       <span className="text-primary text-2xl font-bold font-display">
                         {displayInitial}
                       </span>
-                    </div>
-                  )}
+                    )}
+                  </div>
                   <div className="absolute inset-0 rounded-full bg-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Camera size={16} className="text-card" />
                   </div>
                 </button>
                 <div className="text-sm text-muted-foreground">
                   <p>Click to change your photo</p>
-                  <p className="text-xs mt-0.5">JPG, PNG or GIF · Max 5MB</p>
+                  <p className="text-xs mt-0.5">JPG, PNG or GIF · Max 5 MB</p>
                 </div>
                 <input
                   ref={fileInputRef}
@@ -200,16 +238,16 @@ export default function MyProfilePage() {
               </div>
             </div>
 
-            {/* Username */}
+            {/* Display name */}
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="display-name">Display Name</Label>
               <Input
-                id="username"
-                placeholder="Your artist name..."
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="display-name"
+                placeholder="Your name…"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
                 maxLength={50}
-                data-ocid="my_profile.username_input"
+                data-ocid="my_profile.display_name_input"
               />
             </div>
 
@@ -228,7 +266,7 @@ export default function MyProfilePage() {
               </div>
               <Textarea
                 id="bio"
-                placeholder="Tell the community about your art style..."
+                placeholder="Tell the community about yourself…"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
@@ -237,17 +275,34 @@ export default function MyProfilePage() {
               />
             </div>
 
+            {/* Anonymous by default */}
+            <div className="flex items-center justify-between bg-muted/40 rounded-xl px-4 py-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Post anonymously by default
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Hide your identity on new posts by default
+                </p>
+              </div>
+              <Switch
+                checked={isAnonymousByDefault}
+                onCheckedChange={setIsAnonymousByDefault}
+                data-ocid="my_profile.anonymous_switch"
+              />
+            </div>
+
             <div className="flex items-center gap-3 pt-1">
               <Button
                 type="submit"
-                disabled={!username.trim() || saveMutation.isPending}
+                disabled={updateProfile.isPending}
                 className="gap-2"
                 data-ocid="my_profile.save_button"
               >
-                {saveMutation.isPending ? (
+                {updateProfile.isPending ? (
                   <>
                     <span className="w-4 h-4 border-2 border-primary-foreground/40 border-t-primary-foreground rounded-full animate-spin" />
-                    Saving...
+                    Saving…
                   </>
                 ) : (
                   <>
@@ -255,7 +310,7 @@ export default function MyProfilePage() {
                   </>
                 )}
               </Button>
-              {saveMutation.isSuccess && (
+              {updateProfile.isSuccess && (
                 <span
                   className="text-sm text-accent font-medium"
                   data-ocid="my_profile.success_state"
@@ -265,82 +320,145 @@ export default function MyProfilePage() {
               )}
             </div>
           </form>
-        </div>
+        </motion.div>
 
-        {/* Saved drawings section */}
-        <section data-ocid="my_profile.saved_section">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-              <Bookmark size={16} className="text-accent" />
-            </div>
-            <h2 className="font-display text-lg font-bold text-foreground">
-              My Saved Drawings
-            </h2>
-            {savedDrawings && savedDrawings.items.length > 0 && (
-              <Link
-                to="/saved"
-                className="ml-auto text-sm text-primary hover:underline underline-offset-2"
-                data-ocid="my_profile.view_all_saved_link"
+        {/* Posts + Saved tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
+          <Tabs defaultValue="posts" data-ocid="my_profile.content_tabs">
+            <TabsList className="mb-6">
+              <TabsTrigger
+                value="posts"
+                className="gap-2"
+                data-ocid="my_profile.posts_tab"
               >
-                View all →
-              </Link>
-            )}
-          </div>
+                <Grid3X3 size={14} />
+                My Posts
+              </TabsTrigger>
+              <TabsTrigger
+                value="saved"
+                className="gap-2"
+                data-ocid="my_profile.saved_tab"
+              >
+                <Bookmark size={14} />
+                Saved
+              </TabsTrigger>
+            </TabsList>
 
-          {savedLoading ? (
-            <div
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
-              data-ocid="my_profile.saved_loading_state"
-            >
-              {Array.from({ length: 4 }, (_, i) => `sk-s-${i}`).map((k) => (
+            {/* My Posts tab */}
+            <TabsContent value="posts" data-ocid="my_profile.posts_section">
+              {postsLoading ? (
                 <div
-                  key={k}
-                  className="rounded-2xl overflow-hidden border border-border bg-card"
+                  className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                  data-ocid="my_profile.posts_loading_state"
                 >
-                  <Skeleton className="aspect-[4/3] w-full" />
-                  <div className="p-3 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                  </div>
+                  {Array.from({ length: 6 }, (_, i) => `sk-p-${i}`).map((k) => (
+                    <div
+                      key={k}
+                      className="rounded-2xl overflow-hidden border border-border bg-card"
+                    >
+                      <Skeleton className="aspect-square w-full" />
+                      <div className="p-3 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : !savedDrawings || savedDrawings.items.length === 0 ? (
-            <div
-              className="flex flex-col items-center justify-center py-12 text-center bg-muted/30 rounded-2xl border border-border"
-              data-ocid="my_profile.saved_empty_state"
-            >
-              <Bookmark size={28} className="text-muted-foreground mb-3" />
-              <p className="text-muted-foreground text-sm mb-4">
-                You haven't saved any drawings yet.
-              </p>
-              <Link to="/">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  data-ocid="my_profile.browse_button"
+              ) : myPosts.length === 0 ? (
+                <div
+                  className="flex flex-col items-center justify-center py-14 text-center bg-muted/30 rounded-2xl border border-border"
+                  data-ocid="my_profile.posts_empty_state"
                 >
-                  Browse Drawings
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
-              data-ocid="my_profile.saved_list"
-            >
-              {savedDrawings.items.map((drawing, idx) => (
-                <DrawingCard
-                  key={String(drawing.id)}
-                  drawing={drawing}
-                  index={idx}
-                  isSaved
-                  onSave={(id) => unsaveMutation.mutate(id)}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+                  <UserCircle
+                    size={28}
+                    className="text-muted-foreground mb-3"
+                  />
+                  <p className="text-foreground font-medium mb-1">
+                    No posts yet
+                  </p>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Share your first photo with the community.
+                  </p>
+                  <Link to="/upload">
+                    <Button size="sm" data-ocid="my_profile.upload_button">
+                      Upload a Photo
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="masonry-grid" data-ocid="my_profile.posts_list">
+                  {myPosts.map((post, idx) => (
+                    <PostCard
+                      key={String(post.id)}
+                      post={post}
+                      index={idx}
+                      onLike={(postId) => likeMutation.mutate(postId)}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Saved tab */}
+            <TabsContent value="saved" data-ocid="my_profile.saved_section">
+              {savedLoading ? (
+                <div
+                  className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                  data-ocid="my_profile.saved_loading_state"
+                >
+                  {Array.from({ length: 6 }, (_, i) => `sk-s-${i}`).map((k) => (
+                    <div
+                      key={k}
+                      className="rounded-2xl overflow-hidden border border-border bg-card"
+                    >
+                      <Skeleton className="aspect-square w-full" />
+                      <div className="p-3 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : !savedPosts || savedPosts.length === 0 ? (
+                <div
+                  className="flex flex-col items-center justify-center py-14 text-center bg-muted/30 rounded-2xl border border-border"
+                  data-ocid="my_profile.saved_empty_state"
+                >
+                  <Bookmark size={28} className="text-muted-foreground mb-3" />
+                  <p className="text-foreground font-medium mb-1">
+                    No saved photos yet
+                  </p>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Save photos you love and find them here.
+                  </p>
+                  <Link to="/explore">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      data-ocid="my_profile.browse_button"
+                    >
+                      Explore Photos
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="masonry-grid" data-ocid="my_profile.saved_list">
+                  {savedPosts.map((post, idx) => (
+                    <PostCard
+                      key={String(post.id)}
+                      post={post}
+                      index={idx}
+                      isSaved
+                      onSave={(postId) => unsavePost.mutate(postId)}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </motion.div>
       </div>
     </Layout>
   );

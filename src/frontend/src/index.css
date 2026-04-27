@@ -7,89 +7,98 @@
     --font-display: "BricolageGrotesque", sans-serif;
     --font-body: "DM Sans", sans-serif;
     --font-mono: "Geist Mono", monospace;
-    --radius: 1rem;
+    --radius: 0.875rem;
 
-    --background: 0.98 0.01 60;
-    --foreground: 0.18 0.02 250;
+    /* Warm cream background, deep slate foreground */
+    --background: 0.97 0.008 75;
+    --foreground: 0.16 0.018 255;
     --card: 1.0 0 0;
-    --card-foreground: 0.18 0.02 250;
+    --card-foreground: 0.16 0.018 255;
     --popover: 1.0 0 0;
-    --popover-foreground: 0.18 0.02 250;
+    --popover-foreground: 0.16 0.018 255;
 
-    --primary: 0.65 0.2 40;
-    --primary-foreground: 0.98 0 0;
+    /* Vibrant warm orange primary */
+    --primary: 0.62 0.22 38;
+    --primary-foreground: 0.99 0 0;
 
-    --secondary: 0.95 0.02 70;
-    --secondary-foreground: 0.25 0.05 250;
-    --muted: 0.92 0.01 60;
-    --muted-foreground: 0.45 0.02 250;
+    --secondary: 0.94 0.015 75;
+    --secondary-foreground: 0.25 0.04 255;
+    --muted: 0.93 0.01 70;
+    --muted-foreground: 0.46 0.018 255;
 
-    --accent: 0.55 0.15 200;
-    --accent-foreground: 0.98 0 0;
+    /* Teal accent */
+    --accent: 0.56 0.15 195;
+    --accent-foreground: 0.99 0 0;
 
-    --destructive: 0.55 0.22 25;
-    --destructive-foreground: 0.98 0 0;
+    --success: 0.64 0.18 142;
+    --success-foreground: 0.99 0 0;
 
-    --border: 0.92 0.01 60;
-    --input: 0.95 0.01 60;
-    --ring: 0.65 0.2 40;
+    --destructive: 0.53 0.22 22;
+    --destructive-foreground: 0.99 0 0;
 
-    --chart-1: 0.65 0.2 40;
-    --chart-2: 0.55 0.15 200;
-    --chart-3: 0.75 0.12 70;
-    --chart-4: 0.6 0.18 30;
-    --chart-5: 0.5 0.14 180;
+    --border: 0.91 0.01 70;
+    --input: 0.94 0.01 70;
+    --ring: 0.62 0.22 38;
 
-    --sidebar: 0.95 0.02 70;
-    --sidebar-foreground: 0.18 0.02 250;
-    --sidebar-primary: 0.65 0.2 40;
-    --sidebar-primary-foreground: 0.98 0 0;
-    --sidebar-accent: 0.92 0.01 60;
-    --sidebar-accent-foreground: 0.25 0.05 250;
-    --sidebar-border: 0.88 0.01 60;
-    --sidebar-ring: 0.65 0.2 40;
+    --chart-1: 0.62 0.22 38;
+    --chart-2: 0.56 0.15 195;
+    --chart-3: 0.72 0.14 72;
+    --chart-4: 0.58 0.19 28;
+    --chart-5: 0.52 0.14 175;
+
+    --sidebar: 0.94 0.015 75;
+    --sidebar-foreground: 0.16 0.018 255;
+    --sidebar-primary: 0.62 0.22 38;
+    --sidebar-primary-foreground: 0.99 0 0;
+    --sidebar-accent: 0.91 0.01 70;
+    --sidebar-accent-foreground: 0.25 0.04 255;
+    --sidebar-border: 0.87 0.01 70;
+    --sidebar-ring: 0.62 0.22 38;
   }
 
   .dark {
-    --background: 0.12 0.01 250;
-    --foreground: 0.93 0.01 60;
-    --card: 0.15 0.01 250;
-    --card-foreground: 0.93 0.01 60;
-    --popover: 0.18 0.01 250;
-    --popover-foreground: 0.93 0.01 60;
+    --background: 0.11 0.012 255;
+    --foreground: 0.93 0.008 72;
+    --card: 0.145 0.012 255;
+    --card-foreground: 0.93 0.008 72;
+    --popover: 0.17 0.012 255;
+    --popover-foreground: 0.93 0.008 72;
 
-    --primary: 0.7 0.22 40;
-    --primary-foreground: 0.12 0.01 250;
+    --primary: 0.68 0.23 38;
+    --primary-foreground: 0.11 0.012 255;
 
-    --secondary: 0.2 0.01 250;
-    --secondary-foreground: 0.85 0.01 60;
-    --muted: 0.22 0.01 250;
-    --muted-foreground: 0.55 0.01 60;
+    --secondary: 0.19 0.012 255;
+    --secondary-foreground: 0.84 0.01 72;
+    --muted: 0.21 0.01 255;
+    --muted-foreground: 0.54 0.01 72;
 
-    --accent: 0.6 0.16 200;
-    --accent-foreground: 0.12 0.01 250;
+    --accent: 0.59 0.16 195;
+    --accent-foreground: 0.11 0.012 255;
 
-    --destructive: 0.65 0.19 22;
-    --destructive-foreground: 0.12 0.01 250;
+    --success: 0.67 0.18 142;
+    --success-foreground: 0.11 0.012 255;
 
-    --border: 0.22 0.01 250;
-    --input: 0.22 0.01 250;
-    --ring: 0.7 0.22 40;
+    --destructive: 0.63 0.2 22;
+    --destructive-foreground: 0.11 0.012 255;
 
-    --chart-1: 0.7 0.22 40;
-    --chart-2: 0.6 0.16 200;
-    --chart-3: 0.68 0.14 70;
-    --chart-4: 0.65 0.2 30;
-    --chart-5: 0.55 0.15 180;
+    --border: 0.22 0.012 255;
+    --input: 0.22 0.012 255;
+    --ring: 0.68 0.23 38;
 
-    --sidebar: 0.15 0.01 250;
-    --sidebar-foreground: 0.93 0.01 60;
-    --sidebar-primary: 0.7 0.22 40;
-    --sidebar-primary-foreground: 0.12 0.01 250;
-    --sidebar-accent: 0.22 0.01 250;
-    --sidebar-accent-foreground: 0.85 0.01 60;
-    --sidebar-border: 0.2 0.01 250;
-    --sidebar-ring: 0.7 0.22 40;
+    --chart-1: 0.68 0.23 38;
+    --chart-2: 0.59 0.16 195;
+    --chart-3: 0.67 0.14 72;
+    --chart-4: 0.63 0.21 28;
+    --chart-5: 0.54 0.15 175;
+
+    --sidebar: 0.145 0.012 255;
+    --sidebar-foreground: 0.93 0.008 72;
+    --sidebar-primary: 0.68 0.23 38;
+    --sidebar-primary-foreground: 0.11 0.012 255;
+    --sidebar-accent: 0.21 0.01 255;
+    --sidebar-accent-foreground: 0.84 0.01 72;
+    --sidebar-border: 0.19 0.01 255;
+    --sidebar-ring: 0.68 0.23 38;
   }
 
   * {
@@ -98,11 +107,69 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
+  html {
+    color-scheme: light dark;
+  }
 }
 
 @layer utilities {
   .transition-smooth {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .transition-lift {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s
+      cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover {
+    @apply transition-lift hover:-translate-y-1 hover:shadow-elevated;
+  }
+  .badge-pop {
+    animation: badge-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .gradient-primary {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--primary)) 0%,
+      oklch(var(--accent)) 100%
+    );
+  }
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--primary)) 0%,
+      oklch(var(--accent)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glass {
+    backdrop-filter: blur(12px) saturate(180%);
+    background-color: oklch(var(--card) / 0.85);
+    border: 1px solid oklch(var(--border) / 0.6);
+  }
+  .masonry-grid {
+    columns: 2;
+    column-gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .masonry-grid {
+      columns: 3;
+    }
+  }
+  @media (min-width: 1024px) {
+    .masonry-grid {
+      columns: 4;
+    }
+  }
+  @media (min-width: 1280px) {
+    .masonry-grid {
+      columns: 5;
+    }
+  }
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
   }
 }
 

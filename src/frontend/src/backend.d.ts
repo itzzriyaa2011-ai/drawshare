@@ -14,51 +14,49 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
-export type Timestamp = bigint;
-export interface UpdateDrawingInput {
-    title: string;
-    tags: Array<string>;
-    description: string;
-}
-export type DrawingId = bigint;
-export interface CreateDrawingInput {
-    title: string;
-    imageBlob: ExternalBlob;
-    tags: Array<string>;
-    description: string;
-}
 export type UserId = Principal;
-export interface Drawing {
-    id: DrawingId;
-    title: string;
-    likeCount: bigint;
-    imageBlob: ExternalBlob;
-    createdAt: Timestamp;
-    tags: Array<string>;
-    description: string;
-    author: UserId;
-    updatedAt: Timestamp;
-    savedCount: bigint;
-}
+export type Timestamp = bigint;
 export interface UpdateProfileInput {
     bio: string;
-    username: string;
+    displayName: string;
     avatarBlob?: ExternalBlob;
+    isAnonymousByDefault: boolean;
 }
 export interface Page {
     total: bigint;
     offset: bigint;
     limit: bigint;
-    items: Array<Drawing>;
+    items: Array<Post>;
+}
+export type PostId = bigint;
+export interface Post {
+    id: PostId;
+    title: string;
+    likeCount: bigint;
+    imageBlob: ExternalBlob;
+    createdAt: Timestamp;
+    isAnonymous: boolean;
+    author?: UserId;
+    updatedAt: Timestamp;
+    caption: string;
+    savedCount: bigint;
+}
+export interface CreatePostInput {
+    title: string;
+    imageBlob: ExternalBlob;
+    isAnonymous: boolean;
+    caption: string;
 }
 export interface UserProfile {
     id: UserId;
     bio: string;
-    username: string;
+    postCount: bigint;
+    displayName: string;
     avatarBlob?: ExternalBlob;
     createdAt: Timestamp;
     followerCount: bigint;
     followingCount: bigint;
+    isAnonymousByDefault: boolean;
 }
 export enum UserRole {
     admin = "admin",
@@ -67,27 +65,27 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    deleteDrawing(id: DrawingId): Promise<void>;
+    createPost(input: CreatePostInput): Promise<Post>;
+    deletePost(id: PostId): Promise<void>;
+    explorePosts(offset: bigint, limit: bigint): Promise<Page>;
     followUser(target: UserId): Promise<void>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getDrawing(id: DrawingId): Promise<Drawing | null>;
-    getLikedBy(id: DrawingId): Promise<Array<UserId>>;
-    getSavedDrawings(offset: bigint, limit: bigint): Promise<Page>;
-    getSuggestedDrawings(limit: bigint): Promise<Array<Drawing>>;
-    getTrendingDrawings(limit: bigint): Promise<Array<Drawing>>;
+    getPost(id: PostId): Promise<Post | null>;
+    getPostLikeCount(id: PostId): Promise<bigint>;
+    getSavedPosts(offset: bigint, limit: bigint): Promise<Page>;
+    getUserFollowers(userId: UserId): Promise<Array<UserProfile>>;
+    getUserFollowing(userId: UserId): Promise<Array<UserProfile>>;
     getUserProfile(userId: UserId): Promise<UserProfile | null>;
+    homeFeed(offset: bigint, limit: bigint): Promise<Page>;
     isCallerAdmin(): Promise<boolean>;
     isFollowingUser(target: UserId): Promise<boolean>;
-    likeDrawing(id: DrawingId): Promise<void>;
-    listDrawings(offset: bigint, limit: bigint): Promise<Page>;
-    listDrawingsByTag(tag: string, offset: bigint, limit: bigint): Promise<Page>;
-    postDrawing(input: CreateDrawingInput): Promise<Drawing>;
+    likePost(id: PostId): Promise<void>;
     saveCallerUserProfile(input: UpdateProfileInput): Promise<void>;
-    saveDrawing(id: DrawingId): Promise<void>;
-    searchDrawings(searchQuery: string, offset: bigint, limit: bigint): Promise<Page>;
+    savePost(id: PostId): Promise<void>;
+    searchPosts(keyword: string, offset: bigint, limit: bigint): Promise<Page>;
+    searchUsers(keyword: string): Promise<Array<UserProfile>>;
     unfollowUser(target: UserId): Promise<void>;
-    unlikeDrawing(id: DrawingId): Promise<void>;
-    unsaveDrawing(id: DrawingId): Promise<void>;
-    updateDrawing(id: DrawingId, input: UpdateDrawingInput): Promise<void>;
+    unlikePost(id: PostId): Promise<void>;
+    unsavePost(id: PostId): Promise<void>;
 }

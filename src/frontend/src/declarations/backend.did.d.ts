@@ -10,52 +10,50 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface CreateDrawingInput {
+export interface CreatePostInput {
   'title' : string,
   'imageBlob' : ExternalBlob,
-  'tags' : Array<string>,
-  'description' : string,
+  'isAnonymous' : boolean,
+  'caption' : string,
 }
-export interface Drawing {
-  'id' : DrawingId,
-  'title' : string,
-  'likeCount' : bigint,
-  'imageBlob' : ExternalBlob,
-  'createdAt' : Timestamp,
-  'tags' : Array<string>,
-  'description' : string,
-  'author' : UserId,
-  'updatedAt' : Timestamp,
-  'savedCount' : bigint,
-}
-export type DrawingId = bigint;
 export type ExternalBlob = Uint8Array;
 export interface Page {
   'total' : bigint,
   'offset' : bigint,
   'limit' : bigint,
-  'items' : Array<Drawing>,
+  'items' : Array<Post>,
 }
-export type Timestamp = bigint;
-export interface UpdateDrawingInput {
+export interface Post {
+  'id' : PostId,
   'title' : string,
-  'tags' : Array<string>,
-  'description' : string,
+  'likeCount' : bigint,
+  'imageBlob' : ExternalBlob,
+  'createdAt' : Timestamp,
+  'isAnonymous' : boolean,
+  'author' : [] | [UserId],
+  'updatedAt' : Timestamp,
+  'caption' : string,
+  'savedCount' : bigint,
 }
+export type PostId = bigint;
+export type Timestamp = bigint;
 export interface UpdateProfileInput {
   'bio' : string,
-  'username' : string,
+  'displayName' : string,
   'avatarBlob' : [] | [ExternalBlob],
+  'isAnonymousByDefault' : boolean,
 }
 export type UserId = Principal;
 export interface UserProfile {
   'id' : UserId,
   'bio' : string,
-  'username' : string,
+  'postCount' : bigint,
+  'displayName' : string,
   'avatarBlob' : [] | [ExternalBlob],
   'createdAt' : Timestamp,
   'followerCount' : bigint,
   'followingCount' : bigint,
+  'isAnonymousByDefault' : boolean,
 }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -92,29 +90,29 @@ export interface _SERVICE {
   '_immutableObjectStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControl' : ActorMethod<[], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'deleteDrawing' : ActorMethod<[DrawingId], undefined>,
+  'createPost' : ActorMethod<[CreatePostInput], Post>,
+  'deletePost' : ActorMethod<[PostId], undefined>,
+  'explorePosts' : ActorMethod<[bigint, bigint], Page>,
   'followUser' : ActorMethod<[UserId], undefined>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
-  'getDrawing' : ActorMethod<[DrawingId], [] | [Drawing]>,
-  'getLikedBy' : ActorMethod<[DrawingId], Array<UserId>>,
-  'getSavedDrawings' : ActorMethod<[bigint, bigint], Page>,
-  'getSuggestedDrawings' : ActorMethod<[bigint], Array<Drawing>>,
-  'getTrendingDrawings' : ActorMethod<[bigint], Array<Drawing>>,
+  'getPost' : ActorMethod<[PostId], [] | [Post]>,
+  'getPostLikeCount' : ActorMethod<[PostId], bigint>,
+  'getSavedPosts' : ActorMethod<[bigint, bigint], Page>,
+  'getUserFollowers' : ActorMethod<[UserId], Array<UserProfile>>,
+  'getUserFollowing' : ActorMethod<[UserId], Array<UserProfile>>,
   'getUserProfile' : ActorMethod<[UserId], [] | [UserProfile]>,
+  'homeFeed' : ActorMethod<[bigint, bigint], Page>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isFollowingUser' : ActorMethod<[UserId], boolean>,
-  'likeDrawing' : ActorMethod<[DrawingId], undefined>,
-  'listDrawings' : ActorMethod<[bigint, bigint], Page>,
-  'listDrawingsByTag' : ActorMethod<[string, bigint, bigint], Page>,
-  'postDrawing' : ActorMethod<[CreateDrawingInput], Drawing>,
+  'likePost' : ActorMethod<[PostId], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UpdateProfileInput], undefined>,
-  'saveDrawing' : ActorMethod<[DrawingId], undefined>,
-  'searchDrawings' : ActorMethod<[string, bigint, bigint], Page>,
+  'savePost' : ActorMethod<[PostId], undefined>,
+  'searchPosts' : ActorMethod<[string, bigint, bigint], Page>,
+  'searchUsers' : ActorMethod<[string], Array<UserProfile>>,
   'unfollowUser' : ActorMethod<[UserId], undefined>,
-  'unlikeDrawing' : ActorMethod<[DrawingId], undefined>,
-  'unsaveDrawing' : ActorMethod<[DrawingId], undefined>,
-  'updateDrawing' : ActorMethod<[DrawingId, UpdateDrawingInput], undefined>,
+  'unlikePost' : ActorMethod<[PostId], undefined>,
+  'unsavePost' : ActorMethod<[PostId], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

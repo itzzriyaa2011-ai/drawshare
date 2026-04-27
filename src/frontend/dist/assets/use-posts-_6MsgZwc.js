@@ -10,7 +10,7 @@ var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot
 var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
 var __privateMethod = (obj, member, method) => (__accessCheck(obj, member, "access private method"), method);
 var _client, _currentQuery, _currentQueryInitialState, _currentResult, _currentResultState, _currentResultOptions, _currentThenable, _selectError, _selectFn, _selectResult, _lastQueryWithDefinedData, _staleTimeoutId, _refetchIntervalId, _currentRefetchInterval, _trackedProps, _QueryObserver_instances, executeFetch_fn, updateStaleTimeout_fn, computeRefetchInterval_fn, updateRefetchInterval_fn, updateTimers_fn, clearStaleTimeout_fn, clearRefetchInterval_fn, updateQuery_fn, notify_fn, _a, _client2, _currentResult2, _currentMutation, _mutateOptions, _MutationObserver_instances, updateResult_fn, notify_fn2, _b;
-import { o as ProtocolError, p as TimeoutWaitingForResponseErrorCode, q as utf8ToBytes, E as ExternalError, M as MissingRootKeyErrorCode, C as Certificate, s as lookupResultToBuffer, R as RequestStatusResponseStatus, t as UnknownError, v as RequestStatusDoneNoReplyErrorCode, w as RejectError, x as CertifiedRejectErrorCode, y as UNREACHABLE_ERROR, I as InputError, z as InvalidReadStateRequestErrorCode, A as ReadRequestType, D as Principal, F as IDL, G as MissingCanisterIdErrorCode, H as HttpAgent, J as encode, Q as QueryResponseStatus, K as UncertifiedRejectErrorCode, N as isV3ResponseBody, O as isV2ResponseBody, V as UncertifiedRejectUpdateErrorCode, W as UnexpectedErrorCode, X as decode, Y as Subscribable, Z as pendingThenable, $ as resolveEnabled, a0 as shallowEqualObjects, a1 as resolveStaleTime, a2 as noop, a3 as environmentManager, a4 as isValidTimeout, a5 as timeUntilStale, a6 as timeoutManager, a7 as focusManager, a8 as fetchState, a9 as replaceData, aa as notifyManager, ab as hashKey, ac as getDefaultState, r as reactExports, ad as shouldThrowError, b as useQueryClient, ae as useInternetIdentity, af as createActorWithConfig, ag as Record, ah as Opt, ai as Variant, aj as Vec, ak as Service, al as Func, am as Principal$1, an as Nat, ao as Nat8, ap as Text, aq as Bool, ar as Null, as as Int } from "./index-D4tdokbz.js";
+import { P as ProtocolError, T as TimeoutWaitingForResponseErrorCode, s as utf8ToBytes, E as ExternalError, M as MissingRootKeyErrorCode, t as Certificate, v as lookupResultToBuffer, w as RequestStatusResponseStatus, x as UnknownError, y as RequestStatusDoneNoReplyErrorCode, z as RejectError, A as CertifiedRejectErrorCode, D as UNREACHABLE_ERROR, F as InputError, G as InvalidReadStateRequestErrorCode, H as ReadRequestType, J as Principal, K as IDL, N as MissingCanisterIdErrorCode, O as HttpAgent, Q as encode, V as QueryResponseStatus, W as UncertifiedRejectErrorCode, X as isV3ResponseBody, Y as isV2ResponseBody, Z as UncertifiedRejectUpdateErrorCode, _ as UnexpectedErrorCode, $ as decode, a0 as Subscribable, a1 as pendingThenable, a2 as resolveEnabled, a3 as shallowEqualObjects, a4 as resolveStaleTime, a5 as noop, a6 as environmentManager, a7 as isValidTimeout, a8 as timeUntilStale, a9 as timeoutManager, aa as focusManager, ab as fetchState, ac as replaceData, ad as notifyManager, ae as hashKey, af as getDefaultState, r as reactExports, ag as shouldThrowError, i as useQueryClient, ah as useInternetIdentity, ai as createActorWithConfig, aj as Record, ak as Opt, al as Variant, am as Vec, an as Service, ao as Func, ap as Text, aq as Principal$1, ar as Nat, as as Nat8, at as Bool, au as Null, av as Int } from "./index-Py_44o3M.js";
 const FIVE_MINUTES_IN_MSEC = 5 * 60 * 1e3;
 function defaultStrategy() {
   return chain(conditionalDelay(once(), 1e3), backoff(1e3, 1.2), timeout(FIVE_MINUTES_IN_MSEC));
@@ -1258,52 +1258,50 @@ const UserRole = Variant({
   "user": Null,
   "guest": Null
 });
-const DrawingId = Nat;
-const UserId = Principal$1;
 const ExternalBlob$1 = Vec(Nat8);
-const Timestamp = Int;
-const UserProfile = Record({
-  "id": UserId,
-  "bio": Text,
-  "username": Text,
-  "avatarBlob": Opt(ExternalBlob$1),
-  "createdAt": Timestamp,
-  "followerCount": Nat,
-  "followingCount": Nat
+const CreatePostInput = Record({
+  "title": Text,
+  "imageBlob": ExternalBlob$1,
+  "isAnonymous": Bool,
+  "caption": Text
 });
-const Drawing = Record({
-  "id": DrawingId,
+const PostId = Nat;
+const Timestamp = Int;
+const UserId = Principal$1;
+const Post = Record({
+  "id": PostId,
   "title": Text,
   "likeCount": Nat,
   "imageBlob": ExternalBlob$1,
   "createdAt": Timestamp,
-  "tags": Vec(Text),
-  "description": Text,
-  "author": UserId,
+  "isAnonymous": Bool,
+  "author": Opt(UserId),
   "updatedAt": Timestamp,
+  "caption": Text,
   "savedCount": Nat
 });
 const Page = Record({
   "total": Nat,
   "offset": Nat,
   "limit": Nat,
-  "items": Vec(Drawing)
+  "items": Vec(Post)
 });
-const CreateDrawingInput = Record({
-  "title": Text,
-  "imageBlob": ExternalBlob$1,
-  "tags": Vec(Text),
-  "description": Text
+const UserProfile = Record({
+  "id": UserId,
+  "bio": Text,
+  "postCount": Nat,
+  "displayName": Text,
+  "avatarBlob": Opt(ExternalBlob$1),
+  "createdAt": Timestamp,
+  "followerCount": Nat,
+  "followingCount": Nat,
+  "isAnonymousByDefault": Bool
 });
 const UpdateProfileInput = Record({
   "bio": Text,
-  "username": Text,
-  "avatarBlob": Opt(ExternalBlob$1)
-});
-const UpdateDrawingInput = Record({
-  "title": Text,
-  "tags": Vec(Text),
-  "description": Text
+  "displayName": Text,
+  "avatarBlob": Opt(ExternalBlob$1),
+  "isAnonymousByDefault": Bool
 });
 Service({
   "_immutableObjectStorageBlobsAreLive": Func(
@@ -1334,33 +1332,29 @@ Service({
   "_immutableObjectStorageUpdateGatewayPrincipals": Func([], [], []),
   "_initializeAccessControl": Func([], [], []),
   "assignCallerUserRole": Func([Principal$1, UserRole], [], []),
-  "deleteDrawing": Func([DrawingId], [], []),
+  "createPost": Func([CreatePostInput], [Post], []),
+  "deletePost": Func([PostId], [], []),
+  "explorePosts": Func([Nat, Nat], [Page], ["query"]),
   "followUser": Func([UserId], [], []),
   "getCallerUserProfile": Func([], [Opt(UserProfile)], ["query"]),
   "getCallerUserRole": Func([], [UserRole], ["query"]),
-  "getDrawing": Func([DrawingId], [Opt(Drawing)], ["query"]),
-  "getLikedBy": Func([DrawingId], [Vec(UserId)], ["query"]),
-  "getSavedDrawings": Func([Nat, Nat], [Page], ["query"]),
-  "getSuggestedDrawings": Func([Nat], [Vec(Drawing)], ["query"]),
-  "getTrendingDrawings": Func([Nat], [Vec(Drawing)], ["query"]),
+  "getPost": Func([PostId], [Opt(Post)], ["query"]),
+  "getPostLikeCount": Func([PostId], [Nat], ["query"]),
+  "getSavedPosts": Func([Nat, Nat], [Page], ["query"]),
+  "getUserFollowers": Func([UserId], [Vec(UserProfile)], ["query"]),
+  "getUserFollowing": Func([UserId], [Vec(UserProfile)], ["query"]),
   "getUserProfile": Func([UserId], [Opt(UserProfile)], ["query"]),
+  "homeFeed": Func([Nat, Nat], [Page], ["query"]),
   "isCallerAdmin": Func([], [Bool], ["query"]),
   "isFollowingUser": Func([UserId], [Bool], ["query"]),
-  "likeDrawing": Func([DrawingId], [], []),
-  "listDrawings": Func([Nat, Nat], [Page], ["query"]),
-  "listDrawingsByTag": Func(
-    [Text, Nat, Nat],
-    [Page],
-    ["query"]
-  ),
-  "postDrawing": Func([CreateDrawingInput], [Drawing], []),
+  "likePost": Func([PostId], [], []),
   "saveCallerUserProfile": Func([UpdateProfileInput], [], []),
-  "saveDrawing": Func([DrawingId], [], []),
-  "searchDrawings": Func([Text, Nat, Nat], [Page], ["query"]),
+  "savePost": Func([PostId], [], []),
+  "searchPosts": Func([Text, Nat, Nat], [Page], ["query"]),
+  "searchUsers": Func([Text], [Vec(UserProfile)], ["query"]),
   "unfollowUser": Func([UserId], [], []),
-  "unlikeDrawing": Func([DrawingId], [], []),
-  "unsaveDrawing": Func([DrawingId], [], []),
-  "updateDrawing": Func([DrawingId, UpdateDrawingInput], [], [])
+  "unlikePost": Func([PostId], [], []),
+  "unsavePost": Func([PostId], [], [])
 });
 const idlFactory = ({ IDL: IDL2 }) => {
   const _ImmutableObjectStorageCreateCertificateResult2 = IDL2.Record({
@@ -1379,52 +1373,50 @@ const idlFactory = ({ IDL: IDL2 }) => {
     "user": IDL2.Null,
     "guest": IDL2.Null
   });
-  const DrawingId2 = IDL2.Nat;
-  const UserId2 = IDL2.Principal;
   const ExternalBlob2 = IDL2.Vec(IDL2.Nat8);
-  const Timestamp2 = IDL2.Int;
-  const UserProfile2 = IDL2.Record({
-    "id": UserId2,
-    "bio": IDL2.Text,
-    "username": IDL2.Text,
-    "avatarBlob": IDL2.Opt(ExternalBlob2),
-    "createdAt": Timestamp2,
-    "followerCount": IDL2.Nat,
-    "followingCount": IDL2.Nat
+  const CreatePostInput2 = IDL2.Record({
+    "title": IDL2.Text,
+    "imageBlob": ExternalBlob2,
+    "isAnonymous": IDL2.Bool,
+    "caption": IDL2.Text
   });
-  const Drawing2 = IDL2.Record({
-    "id": DrawingId2,
+  const PostId2 = IDL2.Nat;
+  const Timestamp2 = IDL2.Int;
+  const UserId2 = IDL2.Principal;
+  const Post2 = IDL2.Record({
+    "id": PostId2,
     "title": IDL2.Text,
     "likeCount": IDL2.Nat,
     "imageBlob": ExternalBlob2,
     "createdAt": Timestamp2,
-    "tags": IDL2.Vec(IDL2.Text),
-    "description": IDL2.Text,
-    "author": UserId2,
+    "isAnonymous": IDL2.Bool,
+    "author": IDL2.Opt(UserId2),
     "updatedAt": Timestamp2,
+    "caption": IDL2.Text,
     "savedCount": IDL2.Nat
   });
   const Page2 = IDL2.Record({
     "total": IDL2.Nat,
     "offset": IDL2.Nat,
     "limit": IDL2.Nat,
-    "items": IDL2.Vec(Drawing2)
+    "items": IDL2.Vec(Post2)
   });
-  const CreateDrawingInput2 = IDL2.Record({
-    "title": IDL2.Text,
-    "imageBlob": ExternalBlob2,
-    "tags": IDL2.Vec(IDL2.Text),
-    "description": IDL2.Text
+  const UserProfile2 = IDL2.Record({
+    "id": UserId2,
+    "bio": IDL2.Text,
+    "postCount": IDL2.Nat,
+    "displayName": IDL2.Text,
+    "avatarBlob": IDL2.Opt(ExternalBlob2),
+    "createdAt": Timestamp2,
+    "followerCount": IDL2.Nat,
+    "followingCount": IDL2.Nat,
+    "isAnonymousByDefault": IDL2.Bool
   });
   const UpdateProfileInput2 = IDL2.Record({
     "bio": IDL2.Text,
-    "username": IDL2.Text,
-    "avatarBlob": IDL2.Opt(ExternalBlob2)
-  });
-  const UpdateDrawingInput2 = IDL2.Record({
-    "title": IDL2.Text,
-    "tags": IDL2.Vec(IDL2.Text),
-    "description": IDL2.Text
+    "displayName": IDL2.Text,
+    "avatarBlob": IDL2.Opt(ExternalBlob2),
+    "isAnonymousByDefault": IDL2.Bool
   });
   return IDL2.Service({
     "_immutableObjectStorageBlobsAreLive": IDL2.Func(
@@ -1455,37 +1447,29 @@ const idlFactory = ({ IDL: IDL2 }) => {
     "_immutableObjectStorageUpdateGatewayPrincipals": IDL2.Func([], [], []),
     "_initializeAccessControl": IDL2.Func([], [], []),
     "assignCallerUserRole": IDL2.Func([IDL2.Principal, UserRole2], [], []),
-    "deleteDrawing": IDL2.Func([DrawingId2], [], []),
+    "createPost": IDL2.Func([CreatePostInput2], [Post2], []),
+    "deletePost": IDL2.Func([PostId2], [], []),
+    "explorePosts": IDL2.Func([IDL2.Nat, IDL2.Nat], [Page2], ["query"]),
     "followUser": IDL2.Func([UserId2], [], []),
     "getCallerUserProfile": IDL2.Func([], [IDL2.Opt(UserProfile2)], ["query"]),
     "getCallerUserRole": IDL2.Func([], [UserRole2], ["query"]),
-    "getDrawing": IDL2.Func([DrawingId2], [IDL2.Opt(Drawing2)], ["query"]),
-    "getLikedBy": IDL2.Func([DrawingId2], [IDL2.Vec(UserId2)], ["query"]),
-    "getSavedDrawings": IDL2.Func([IDL2.Nat, IDL2.Nat], [Page2], ["query"]),
-    "getSuggestedDrawings": IDL2.Func([IDL2.Nat], [IDL2.Vec(Drawing2)], ["query"]),
-    "getTrendingDrawings": IDL2.Func([IDL2.Nat], [IDL2.Vec(Drawing2)], ["query"]),
+    "getPost": IDL2.Func([PostId2], [IDL2.Opt(Post2)], ["query"]),
+    "getPostLikeCount": IDL2.Func([PostId2], [IDL2.Nat], ["query"]),
+    "getSavedPosts": IDL2.Func([IDL2.Nat, IDL2.Nat], [Page2], ["query"]),
+    "getUserFollowers": IDL2.Func([UserId2], [IDL2.Vec(UserProfile2)], ["query"]),
+    "getUserFollowing": IDL2.Func([UserId2], [IDL2.Vec(UserProfile2)], ["query"]),
     "getUserProfile": IDL2.Func([UserId2], [IDL2.Opt(UserProfile2)], ["query"]),
+    "homeFeed": IDL2.Func([IDL2.Nat, IDL2.Nat], [Page2], ["query"]),
     "isCallerAdmin": IDL2.Func([], [IDL2.Bool], ["query"]),
     "isFollowingUser": IDL2.Func([UserId2], [IDL2.Bool], ["query"]),
-    "likeDrawing": IDL2.Func([DrawingId2], [], []),
-    "listDrawings": IDL2.Func([IDL2.Nat, IDL2.Nat], [Page2], ["query"]),
-    "listDrawingsByTag": IDL2.Func(
-      [IDL2.Text, IDL2.Nat, IDL2.Nat],
-      [Page2],
-      ["query"]
-    ),
-    "postDrawing": IDL2.Func([CreateDrawingInput2], [Drawing2], []),
+    "likePost": IDL2.Func([PostId2], [], []),
     "saveCallerUserProfile": IDL2.Func([UpdateProfileInput2], [], []),
-    "saveDrawing": IDL2.Func([DrawingId2], [], []),
-    "searchDrawings": IDL2.Func(
-      [IDL2.Text, IDL2.Nat, IDL2.Nat],
-      [Page2],
-      ["query"]
-    ),
+    "savePost": IDL2.Func([PostId2], [], []),
+    "searchPosts": IDL2.Func([IDL2.Text, IDL2.Nat, IDL2.Nat], [Page2], ["query"]),
+    "searchUsers": IDL2.Func([IDL2.Text], [IDL2.Vec(UserProfile2)], ["query"]),
     "unfollowUser": IDL2.Func([UserId2], [], []),
-    "unlikeDrawing": IDL2.Func([DrawingId2], [], []),
-    "unsaveDrawing": IDL2.Func([DrawingId2], [], []),
-    "updateDrawing": IDL2.Func([DrawingId2, UpdateDrawingInput2], [], [])
+    "unlikePost": IDL2.Func([PostId2], [], []),
+    "unsavePost": IDL2.Func([PostId2], [], [])
   });
 };
 function candid_some(value) {
@@ -1656,18 +1640,46 @@ class Backend {
       return result;
     }
   }
-  async deleteDrawing(arg0) {
+  async createPost(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.deleteDrawing(arg0);
+        const result = await this.actor.createPost(await to_candid_CreatePostInput_n10(this._uploadFile, this._downloadFile, arg0));
+        return from_candid_Post_n13(this._uploadFile, this._downloadFile, result);
+      } catch (e) {
+        this.processError(e);
+        throw new Error("unreachable");
+      }
+    } else {
+      const result = await this.actor.createPost(await to_candid_CreatePostInput_n10(this._uploadFile, this._downloadFile, arg0));
+      return from_candid_Post_n13(this._uploadFile, this._downloadFile, result);
+    }
+  }
+  async deletePost(arg0) {
+    if (this.processError) {
+      try {
+        const result = await this.actor.deletePost(arg0);
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.deleteDrawing(arg0);
+      const result = await this.actor.deletePost(arg0);
       return result;
+    }
+  }
+  async explorePosts(arg0, arg1) {
+    if (this.processError) {
+      try {
+        const result = await this.actor.explorePosts(arg0, arg1);
+        return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
+      } catch (e) {
+        this.processError(e);
+        throw new Error("unreachable");
+      }
+    } else {
+      const result = await this.actor.explorePosts(arg0, arg1);
+      return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
     }
   }
   async followUser(arg0) {
@@ -1688,112 +1700,126 @@ class Backend {
     if (this.processError) {
       try {
         const result = await this.actor.getCallerUserProfile();
-        return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+        return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
       const result = await this.actor.getCallerUserProfile();
-      return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+      return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
     }
   }
   async getCallerUserRole() {
     if (this.processError) {
       try {
         const result = await this.actor.getCallerUserRole();
-        return from_candid_UserRole_n15(this._uploadFile, this._downloadFile, result);
+        return from_candid_UserRole_n24(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
       const result = await this.actor.getCallerUserRole();
-      return from_candid_UserRole_n15(this._uploadFile, this._downloadFile, result);
+      return from_candid_UserRole_n24(this._uploadFile, this._downloadFile, result);
     }
   }
-  async getDrawing(arg0) {
+  async getPost(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.getDrawing(arg0);
-        return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+        const result = await this.actor.getPost(arg0);
+        return from_candid_opt_n26(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.getDrawing(arg0);
-      return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+      const result = await this.actor.getPost(arg0);
+      return from_candid_opt_n26(this._uploadFile, this._downloadFile, result);
     }
   }
-  async getLikedBy(arg0) {
+  async getPostLikeCount(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.getLikedBy(arg0);
+        const result = await this.actor.getPostLikeCount(arg0);
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.getLikedBy(arg0);
+      const result = await this.actor.getPostLikeCount(arg0);
       return result;
     }
   }
-  async getSavedDrawings(arg0, arg1) {
+  async getSavedPosts(arg0, arg1) {
     if (this.processError) {
       try {
-        const result = await this.actor.getSavedDrawings(arg0, arg1);
-        return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
+        const result = await this.actor.getSavedPosts(arg0, arg1);
+        return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.getSavedDrawings(arg0, arg1);
-      return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
+      const result = await this.actor.getSavedPosts(arg0, arg1);
+      return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
     }
   }
-  async getSuggestedDrawings(arg0) {
+  async getUserFollowers(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.getSuggestedDrawings(arg0);
-        return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
+        const result = await this.actor.getUserFollowers(arg0);
+        return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.getSuggestedDrawings(arg0);
-      return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
+      const result = await this.actor.getUserFollowers(arg0);
+      return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
     }
   }
-  async getTrendingDrawings(arg0) {
+  async getUserFollowing(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.getTrendingDrawings(arg0);
-        return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
+        const result = await this.actor.getUserFollowing(arg0);
+        return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.getTrendingDrawings(arg0);
-      return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
+      const result = await this.actor.getUserFollowing(arg0);
+      return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
     }
   }
   async getUserProfile(arg0) {
     if (this.processError) {
       try {
         const result = await this.actor.getUserProfile(arg0);
-        return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+        return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
       const result = await this.actor.getUserProfile(arg0);
-      return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+      return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
+    }
+  }
+  async homeFeed(arg0, arg1) {
+    if (this.processError) {
+      try {
+        const result = await this.actor.homeFeed(arg0, arg1);
+        return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
+      } catch (e) {
+        this.processError(e);
+        throw new Error("unreachable");
+      }
+    } else {
+      const result = await this.actor.homeFeed(arg0, arg1);
+      return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
     }
   }
   async isCallerAdmin() {
@@ -1824,102 +1850,74 @@ class Backend {
       return result;
     }
   }
-  async likeDrawing(arg0) {
+  async likePost(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.likeDrawing(arg0);
+        const result = await this.actor.likePost(arg0);
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.likeDrawing(arg0);
+      const result = await this.actor.likePost(arg0);
       return result;
-    }
-  }
-  async listDrawings(arg0, arg1) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.listDrawings(arg0, arg1);
-        return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.listDrawings(arg0, arg1);
-      return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
-    }
-  }
-  async listDrawingsByTag(arg0, arg1, arg2) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.listDrawingsByTag(arg0, arg1, arg2);
-        return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.listDrawingsByTag(arg0, arg1, arg2);
-      return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
-    }
-  }
-  async postDrawing(arg0) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.postDrawing(await to_candid_CreateDrawingInput_n23(this._uploadFile, this._downloadFile, arg0));
-        return from_candid_Drawing_n18(this._uploadFile, this._downloadFile, result);
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.postDrawing(await to_candid_CreateDrawingInput_n23(this._uploadFile, this._downloadFile, arg0));
-      return from_candid_Drawing_n18(this._uploadFile, this._downloadFile, result);
     }
   }
   async saveCallerUserProfile(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.saveCallerUserProfile(await to_candid_UpdateProfileInput_n26(this._uploadFile, this._downloadFile, arg0));
+        const result = await this.actor.saveCallerUserProfile(await to_candid_UpdateProfileInput_n28(this._uploadFile, this._downloadFile, arg0));
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.saveCallerUserProfile(await to_candid_UpdateProfileInput_n26(this._uploadFile, this._downloadFile, arg0));
+      const result = await this.actor.saveCallerUserProfile(await to_candid_UpdateProfileInput_n28(this._uploadFile, this._downloadFile, arg0));
       return result;
     }
   }
-  async saveDrawing(arg0) {
+  async savePost(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.saveDrawing(arg0);
+        const result = await this.actor.savePost(arg0);
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.saveDrawing(arg0);
+      const result = await this.actor.savePost(arg0);
       return result;
     }
   }
-  async searchDrawings(arg0, arg1, arg2) {
+  async searchPosts(arg0, arg1, arg2) {
     if (this.processError) {
       try {
-        const result = await this.actor.searchDrawings(arg0, arg1, arg2);
-        return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
+        const result = await this.actor.searchPosts(arg0, arg1, arg2);
+        return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.searchDrawings(arg0, arg1, arg2);
-      return from_candid_Page_n20(this._uploadFile, this._downloadFile, result);
+      const result = await this.actor.searchPosts(arg0, arg1, arg2);
+      return from_candid_Page_n17(this._uploadFile, this._downloadFile, result);
+    }
+  }
+  async searchUsers(arg0) {
+    if (this.processError) {
+      try {
+        const result = await this.actor.searchUsers(arg0);
+        return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+      } catch (e) {
+        this.processError(e);
+        throw new Error("unreachable");
+      }
+    } else {
+      const result = await this.actor.searchUsers(arg0);
+      return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
     }
   }
   async unfollowUser(arg0) {
@@ -1936,75 +1934,64 @@ class Backend {
       return result;
     }
   }
-  async unlikeDrawing(arg0) {
+  async unlikePost(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.unlikeDrawing(arg0);
+        const result = await this.actor.unlikePost(arg0);
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.unlikeDrawing(arg0);
+      const result = await this.actor.unlikePost(arg0);
       return result;
     }
   }
-  async unsaveDrawing(arg0) {
+  async unsavePost(arg0) {
     if (this.processError) {
       try {
-        const result = await this.actor.unsaveDrawing(arg0);
+        const result = await this.actor.unsavePost(arg0);
         return result;
       } catch (e) {
         this.processError(e);
         throw new Error("unreachable");
       }
     } else {
-      const result = await this.actor.unsaveDrawing(arg0);
-      return result;
-    }
-  }
-  async updateDrawing(arg0, arg1) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.updateDrawing(arg0, arg1);
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.updateDrawing(arg0, arg1);
+      const result = await this.actor.unsavePost(arg0);
       return result;
     }
   }
 }
-async function from_candid_Drawing_n18(_uploadFile, _downloadFile, value) {
-  return await from_candid_record_n19(_uploadFile, _downloadFile, value);
-}
-async function from_candid_ExternalBlob_n14(_uploadFile, _downloadFile, value) {
+async function from_candid_ExternalBlob_n15(_uploadFile, _downloadFile, value) {
   return await _downloadFile(value);
 }
-async function from_candid_Page_n20(_uploadFile, _downloadFile, value) {
-  return await from_candid_record_n21(_uploadFile, _downloadFile, value);
+async function from_candid_Page_n17(_uploadFile, _downloadFile, value) {
+  return await from_candid_record_n18(_uploadFile, _downloadFile, value);
 }
-async function from_candid_UserProfile_n11(_uploadFile, _downloadFile, value) {
-  return await from_candid_record_n12(_uploadFile, _downloadFile, value);
+async function from_candid_Post_n13(_uploadFile, _downloadFile, value) {
+  return await from_candid_record_n14(_uploadFile, _downloadFile, value);
 }
-function from_candid_UserRole_n15(_uploadFile, _downloadFile, value) {
-  return from_candid_variant_n16(_uploadFile, _downloadFile, value);
+async function from_candid_UserProfile_n21(_uploadFile, _downloadFile, value) {
+  return await from_candid_record_n22(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserRole_n24(_uploadFile, _downloadFile, value) {
+  return from_candid_variant_n25(_uploadFile, _downloadFile, value);
 }
 function from_candid__ImmutableObjectStorageRefillResult_n4(_uploadFile, _downloadFile, value) {
   return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
-async function from_candid_opt_n10(_uploadFile, _downloadFile, value) {
-  return value.length === 0 ? null : await from_candid_UserProfile_n11(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n16(_uploadFile, _downloadFile, value) {
+  return value.length === 0 ? null : value[0];
 }
-async function from_candid_opt_n13(_uploadFile, _downloadFile, value) {
-  return value.length === 0 ? null : await from_candid_ExternalBlob_n14(_uploadFile, _downloadFile, value[0]);
+async function from_candid_opt_n20(_uploadFile, _downloadFile, value) {
+  return value.length === 0 ? null : await from_candid_UserProfile_n21(_uploadFile, _downloadFile, value[0]);
 }
-async function from_candid_opt_n17(_uploadFile, _downloadFile, value) {
-  return value.length === 0 ? null : await from_candid_Drawing_n18(_uploadFile, _downloadFile, value[0]);
+async function from_candid_opt_n23(_uploadFile, _downloadFile, value) {
+  return value.length === 0 ? null : await from_candid_ExternalBlob_n15(_uploadFile, _downloadFile, value[0]);
+}
+async function from_candid_opt_n26(_uploadFile, _downloadFile, value) {
+  return value.length === 0 ? null : await from_candid_Post_n13(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile, _downloadFile, value) {
   return value.length === 0 ? null : value[0];
@@ -2012,37 +1999,39 @@ function from_candid_opt_n6(_uploadFile, _downloadFile, value) {
 function from_candid_opt_n7(_uploadFile, _downloadFile, value) {
   return value.length === 0 ? null : value[0];
 }
-async function from_candid_record_n12(_uploadFile, _downloadFile, value) {
-  return {
-    id: value.id,
-    bio: value.bio,
-    username: value.username,
-    avatarBlob: record_opt_to_undefined(await from_candid_opt_n13(_uploadFile, _downloadFile, value.avatarBlob)),
-    createdAt: value.createdAt,
-    followerCount: value.followerCount,
-    followingCount: value.followingCount
-  };
-}
-async function from_candid_record_n19(_uploadFile, _downloadFile, value) {
+async function from_candid_record_n14(_uploadFile, _downloadFile, value) {
   return {
     id: value.id,
     title: value.title,
     likeCount: value.likeCount,
-    imageBlob: await from_candid_ExternalBlob_n14(_uploadFile, _downloadFile, value.imageBlob),
+    imageBlob: await from_candid_ExternalBlob_n15(_uploadFile, _downloadFile, value.imageBlob),
     createdAt: value.createdAt,
-    tags: value.tags,
-    description: value.description,
-    author: value.author,
+    isAnonymous: value.isAnonymous,
+    author: record_opt_to_undefined(from_candid_opt_n16(_uploadFile, _downloadFile, value.author)),
     updatedAt: value.updatedAt,
+    caption: value.caption,
     savedCount: value.savedCount
   };
 }
-async function from_candid_record_n21(_uploadFile, _downloadFile, value) {
+async function from_candid_record_n18(_uploadFile, _downloadFile, value) {
   return {
     total: value.total,
     offset: value.offset,
     limit: value.limit,
-    items: await from_candid_vec_n22(_uploadFile, _downloadFile, value.items)
+    items: await from_candid_vec_n19(_uploadFile, _downloadFile, value.items)
+  };
+}
+async function from_candid_record_n22(_uploadFile, _downloadFile, value) {
+  return {
+    id: value.id,
+    bio: value.bio,
+    postCount: value.postCount,
+    displayName: value.displayName,
+    avatarBlob: record_opt_to_undefined(await from_candid_opt_n23(_uploadFile, _downloadFile, value.avatarBlob)),
+    createdAt: value.createdAt,
+    followerCount: value.followerCount,
+    followingCount: value.followingCount,
+    isAnonymousByDefault: value.isAnonymousByDefault
   };
 }
 function from_candid_record_n5(_uploadFile, _downloadFile, value) {
@@ -2051,20 +2040,23 @@ function from_candid_record_n5(_uploadFile, _downloadFile, value) {
     topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
   };
 }
-function from_candid_variant_n16(_uploadFile, _downloadFile, value) {
+function from_candid_variant_n25(_uploadFile, _downloadFile, value) {
   return "admin" in value ? "admin" : "user" in value ? "user" : "guest" in value ? "guest" : value;
 }
-async function from_candid_vec_n22(_uploadFile, _downloadFile, value) {
-  return await Promise.all(value.map(async (x) => await from_candid_Drawing_n18(_uploadFile, _downloadFile, x)));
+async function from_candid_vec_n19(_uploadFile, _downloadFile, value) {
+  return await Promise.all(value.map(async (x) => await from_candid_Post_n13(_uploadFile, _downloadFile, x)));
 }
-async function to_candid_CreateDrawingInput_n23(_uploadFile, _downloadFile, value) {
-  return await to_candid_record_n24(_uploadFile, _downloadFile, value);
+async function from_candid_vec_n27(_uploadFile, _downloadFile, value) {
+  return await Promise.all(value.map(async (x) => await from_candid_UserProfile_n21(_uploadFile, _downloadFile, x)));
 }
-async function to_candid_ExternalBlob_n25(_uploadFile, _downloadFile, value) {
+async function to_candid_CreatePostInput_n10(_uploadFile, _downloadFile, value) {
+  return await to_candid_record_n11(_uploadFile, _downloadFile, value);
+}
+async function to_candid_ExternalBlob_n12(_uploadFile, _downloadFile, value) {
   return await _uploadFile(value);
 }
-async function to_candid_UpdateProfileInput_n26(_uploadFile, _downloadFile, value) {
-  return await to_candid_record_n27(_uploadFile, _downloadFile, value);
+async function to_candid_UpdateProfileInput_n28(_uploadFile, _downloadFile, value) {
+  return await to_candid_record_n29(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n8(_uploadFile, _downloadFile, value) {
   return to_candid_variant_n9(_uploadFile, _downloadFile, value);
@@ -2075,19 +2067,20 @@ function to_candid__ImmutableObjectStorageRefillInformation_n2(_uploadFile, _dow
 function to_candid_opt_n1(_uploadFile, _downloadFile, value) {
   return value === null ? candid_none() : candid_some(to_candid__ImmutableObjectStorageRefillInformation_n2(_uploadFile, _downloadFile, value));
 }
-async function to_candid_record_n24(_uploadFile, _downloadFile, value) {
+async function to_candid_record_n11(_uploadFile, _downloadFile, value) {
   return {
     title: value.title,
-    imageBlob: await to_candid_ExternalBlob_n25(_uploadFile, _downloadFile, value.imageBlob),
-    tags: value.tags,
-    description: value.description
+    imageBlob: await to_candid_ExternalBlob_n12(_uploadFile, _downloadFile, value.imageBlob),
+    isAnonymous: value.isAnonymous,
+    caption: value.caption
   };
 }
-async function to_candid_record_n27(_uploadFile, _downloadFile, value) {
+async function to_candid_record_n29(_uploadFile, _downloadFile, value) {
   return {
     bio: value.bio,
-    username: value.username,
-    avatarBlob: value.avatarBlob ? candid_some(await to_candid_ExternalBlob_n25(_uploadFile, _downloadFile, value.avatarBlob)) : candid_none()
+    displayName: value.displayName,
+    avatarBlob: value.avatarBlob ? candid_some(await to_candid_ExternalBlob_n12(_uploadFile, _downloadFile, value.avatarBlob)) : candid_none(),
+    isAnonymousByDefault: value.isAnonymousByDefault
   };
 }
 function to_candid_record_n3(_uploadFile, _downloadFile, value) {
@@ -2122,9 +2115,166 @@ function useBackend() {
   const { actor, isFetching } = useActor(createActor);
   return { actor, isFetching };
 }
+const PAGE_SIZE = 20n;
+function postToCardData(post) {
+  return {
+    id: post.id,
+    imageUrl: post.imageBlob.getDirectURL(),
+    title: post.title,
+    caption: post.caption,
+    isAnonymous: post.isAnonymous,
+    authorId: post.author,
+    likeCount: post.likeCount,
+    savedCount: post.savedCount,
+    createdAt: post.createdAt
+  };
+}
+function useHomeFeed(offset = 0n) {
+  const { actor, isFetching } = useBackend();
+  return useQuery({
+    queryKey: ["home-feed", String(offset)],
+    queryFn: async () => {
+      if (!actor) return [];
+      const page = await actor.homeFeed(offset, PAGE_SIZE);
+      return page.items.map(postToCardData);
+    },
+    enabled: !!actor && !isFetching
+  });
+}
+function useExplorePosts(offset = 0n) {
+  const { actor, isFetching } = useBackend();
+  return useQuery({
+    queryKey: ["explore-posts", String(offset)],
+    queryFn: async () => {
+      if (!actor) return [];
+      const page = await actor.explorePosts(offset, PAGE_SIZE);
+      return page.items.map(postToCardData);
+    },
+    enabled: !!actor && !isFetching
+  });
+}
+function usePost(id) {
+  const { actor, isFetching } = useBackend();
+  return useQuery({
+    queryKey: ["post", String(id)],
+    queryFn: async () => {
+      if (!actor) return null;
+      const post = await actor.getPost(id);
+      if (!post) return null;
+      return postToCardData(post);
+    },
+    enabled: !!actor && !isFetching
+  });
+}
+function useSearchPosts(keyword, offset = 0n) {
+  const { actor, isFetching } = useBackend();
+  return useQuery({
+    queryKey: ["search-posts", keyword, String(offset)],
+    queryFn: async () => {
+      if (!actor || !keyword.trim()) return [];
+      const page = await actor.searchPosts(keyword.trim(), offset, PAGE_SIZE);
+      return page.items.map(postToCardData);
+    },
+    enabled: !!actor && !isFetching && keyword.trim().length > 0
+  });
+}
+function useSavedPosts(offset = 0n) {
+  const { actor, isFetching } = useBackend();
+  return useQuery({
+    queryKey: ["saved-posts", String(offset)],
+    queryFn: async () => {
+      if (!actor) return [];
+      const page = await actor.getSavedPosts(offset, PAGE_SIZE);
+      return page.items.map(postToCardData);
+    },
+    enabled: !!actor && !isFetching
+  });
+}
+function useLikePost() {
+  const { actor } = useBackend();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.likePost(id);
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ["post", String(id)] });
+      queryClient.invalidateQueries({
+        queryKey: ["post-like-count", String(id)]
+      });
+      queryClient.invalidateQueries({ queryKey: ["home-feed"] });
+      queryClient.invalidateQueries({ queryKey: ["explore-posts"] });
+    }
+  });
+}
+function useSavePost() {
+  const { actor } = useBackend();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.savePost(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+    }
+  });
+}
+function useUnsavePost() {
+  const { actor } = useBackend();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.unsavePost(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+    }
+  });
+}
+function useCreatePost() {
+  const { actor } = useBackend();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.createPost(input);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["home-feed"] });
+      queryClient.invalidateQueries({ queryKey: ["explore-posts"] });
+    }
+  });
+}
+function useDeletePost() {
+  const { actor } = useBackend();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.deletePost(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["home-feed"] });
+      queryClient.invalidateQueries({ queryKey: ["explore-posts"] });
+    }
+  });
+}
 export {
   ExternalBlob as E,
-  useQuery as a,
-  useMutation as b,
-  useBackend as u
+  useLikePost as a,
+  useSavePost as b,
+  useExplorePosts as c,
+  useSearchPosts as d,
+  useBackend as e,
+  useQuery as f,
+  useMutation as g,
+  useSavedPosts as h,
+  useUnsavePost as i,
+  useCreatePost as j,
+  usePost as k,
+  useDeletePost as l,
+  useHomeFeed as u
 };

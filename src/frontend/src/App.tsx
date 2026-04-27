@@ -11,26 +11,28 @@ import { Suspense, lazy } from "react";
 import { Layout } from "./components/Layout";
 import NotFound from "./pages/NotFound";
 
-// Lazy-loaded pages
 const FeedPage = lazy(() => import("./pages/Feed"));
-const DrawingDetailPage = lazy(() => import("./pages/DrawingDetail"));
+const ExplorePage = lazy(() => import("./pages/Explore"));
+const PostDetailPage = lazy(() => import("./pages/PostDetail"));
 const UploadPage = lazy(() => import("./pages/Upload"));
 const ProfilePage = lazy(() => import("./pages/Profile"));
 const MyProfilePage = lazy(() => import("./pages/MyProfile"));
-const TrendingPage = lazy(() => import("./pages/Trending"));
-const SavedPage = lazy(() => import("./pages/Saved"));
+const SearchPage = lazy(() => import("./pages/Search"));
 
 function PageLoader() {
   return (
     <Layout>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
         {Array.from({ length: 8 }, (_, i) => `skeleton-${i}`).map((key) => (
           <div
             key={key}
-            className="rounded-2xl overflow-hidden border border-border"
+            className="break-inside-avoid rounded-2xl overflow-hidden border border-border"
           >
-            <Skeleton className="aspect-[4/3] w-full" />
-            <div className="p-4 space-y-2">
+            <Skeleton
+              className="w-full"
+              style={{ height: `${Math.floor(Math.random() * 120 + 160)}px` }}
+            />
+            <div className="p-3 space-y-2">
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-3 w-1/2" />
             </div>
@@ -41,7 +43,6 @@ function PageLoader() {
   );
 }
 
-// Route tree
 const rootRoute = createRootRoute({
   component: () => (
     <>
@@ -55,12 +56,6 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { tag?: string; q?: string } => ({
-    tag: typeof search.tag === "string" ? search.tag : undefined,
-    q: typeof search.q === "string" ? search.q : undefined,
-  }),
   component: () => (
     <Suspense fallback={<PageLoader />}>
       <FeedPage />
@@ -68,32 +63,25 @@ const indexRoute = createRoute({
   ),
 });
 
-const trendingRoute = createRoute({
+const exploreRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/trending",
+  path: "/explore",
+  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
+    q: typeof search.q === "string" ? search.q : undefined,
+  }),
   component: () => (
     <Suspense fallback={<PageLoader />}>
-      <TrendingPage />
+      <ExplorePage />
     </Suspense>
   ),
 });
 
-const savedRoute = createRoute({
+const postRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/saved",
+  path: "/post/$id",
   component: () => (
     <Suspense fallback={<PageLoader />}>
-      <SavedPage />
-    </Suspense>
-  ),
-});
-
-const drawingRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/drawing/$id",
-  component: () => (
-    <Suspense fallback={<PageLoader />}>
-      <DrawingDetailPage />
+      <PostDetailPage />
     </Suspense>
   ),
 });
@@ -128,14 +116,27 @@ const meRoute = createRoute({
   ),
 });
 
+const searchRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/search",
+  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
+    q: typeof search.q === "string" ? search.q : undefined,
+  }),
+  component: () => (
+    <Suspense fallback={<PageLoader />}>
+      <SearchPage />
+    </Suspense>
+  ),
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  trendingRoute,
-  savedRoute,
-  drawingRoute,
+  exploreRoute,
+  postRoute,
   uploadRoute,
   profileRoute,
   meRoute,
+  searchRoute,
 ]);
 
 const router = createRouter({ routeTree });

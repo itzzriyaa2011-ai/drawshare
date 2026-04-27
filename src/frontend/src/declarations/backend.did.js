@@ -24,52 +24,50 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const DrawingId = IDL.Nat;
-export const UserId = IDL.Principal;
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
-export const Timestamp = IDL.Int;
-export const UserProfile = IDL.Record({
-  'id' : UserId,
-  'bio' : IDL.Text,
-  'username' : IDL.Text,
-  'avatarBlob' : IDL.Opt(ExternalBlob),
-  'createdAt' : Timestamp,
-  'followerCount' : IDL.Nat,
-  'followingCount' : IDL.Nat,
+export const CreatePostInput = IDL.Record({
+  'title' : IDL.Text,
+  'imageBlob' : ExternalBlob,
+  'isAnonymous' : IDL.Bool,
+  'caption' : IDL.Text,
 });
-export const Drawing = IDL.Record({
-  'id' : DrawingId,
+export const PostId = IDL.Nat;
+export const Timestamp = IDL.Int;
+export const UserId = IDL.Principal;
+export const Post = IDL.Record({
+  'id' : PostId,
   'title' : IDL.Text,
   'likeCount' : IDL.Nat,
   'imageBlob' : ExternalBlob,
   'createdAt' : Timestamp,
-  'tags' : IDL.Vec(IDL.Text),
-  'description' : IDL.Text,
-  'author' : UserId,
+  'isAnonymous' : IDL.Bool,
+  'author' : IDL.Opt(UserId),
   'updatedAt' : Timestamp,
+  'caption' : IDL.Text,
   'savedCount' : IDL.Nat,
 });
 export const Page = IDL.Record({
   'total' : IDL.Nat,
   'offset' : IDL.Nat,
   'limit' : IDL.Nat,
-  'items' : IDL.Vec(Drawing),
+  'items' : IDL.Vec(Post),
 });
-export const CreateDrawingInput = IDL.Record({
-  'title' : IDL.Text,
-  'imageBlob' : ExternalBlob,
-  'tags' : IDL.Vec(IDL.Text),
-  'description' : IDL.Text,
+export const UserProfile = IDL.Record({
+  'id' : UserId,
+  'bio' : IDL.Text,
+  'postCount' : IDL.Nat,
+  'displayName' : IDL.Text,
+  'avatarBlob' : IDL.Opt(ExternalBlob),
+  'createdAt' : Timestamp,
+  'followerCount' : IDL.Nat,
+  'followingCount' : IDL.Nat,
+  'isAnonymousByDefault' : IDL.Bool,
 });
 export const UpdateProfileInput = IDL.Record({
   'bio' : IDL.Text,
-  'username' : IDL.Text,
+  'displayName' : IDL.Text,
   'avatarBlob' : IDL.Opt(ExternalBlob),
-});
-export const UpdateDrawingInput = IDL.Record({
-  'title' : IDL.Text,
-  'tags' : IDL.Vec(IDL.Text),
-  'description' : IDL.Text,
+  'isAnonymousByDefault' : IDL.Bool,
 });
 
 export const idlService = IDL.Service({
@@ -101,33 +99,29 @@ export const idlService = IDL.Service({
   '_immutableObjectStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControl' : IDL.Func([], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'deleteDrawing' : IDL.Func([DrawingId], [], []),
+  'createPost' : IDL.Func([CreatePostInput], [Post], []),
+  'deletePost' : IDL.Func([PostId], [], []),
+  'explorePosts' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
   'followUser' : IDL.Func([UserId], [], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getDrawing' : IDL.Func([DrawingId], [IDL.Opt(Drawing)], ['query']),
-  'getLikedBy' : IDL.Func([DrawingId], [IDL.Vec(UserId)], ['query']),
-  'getSavedDrawings' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
-  'getSuggestedDrawings' : IDL.Func([IDL.Nat], [IDL.Vec(Drawing)], ['query']),
-  'getTrendingDrawings' : IDL.Func([IDL.Nat], [IDL.Vec(Drawing)], ['query']),
+  'getPost' : IDL.Func([PostId], [IDL.Opt(Post)], ['query']),
+  'getPostLikeCount' : IDL.Func([PostId], [IDL.Nat], ['query']),
+  'getSavedPosts' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
+  'getUserFollowers' : IDL.Func([UserId], [IDL.Vec(UserProfile)], ['query']),
+  'getUserFollowing' : IDL.Func([UserId], [IDL.Vec(UserProfile)], ['query']),
   'getUserProfile' : IDL.Func([UserId], [IDL.Opt(UserProfile)], ['query']),
+  'homeFeed' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isFollowingUser' : IDL.Func([UserId], [IDL.Bool], ['query']),
-  'likeDrawing' : IDL.Func([DrawingId], [], []),
-  'listDrawings' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
-  'listDrawingsByTag' : IDL.Func(
-      [IDL.Text, IDL.Nat, IDL.Nat],
-      [Page],
-      ['query'],
-    ),
-  'postDrawing' : IDL.Func([CreateDrawingInput], [Drawing], []),
+  'likePost' : IDL.Func([PostId], [], []),
   'saveCallerUserProfile' : IDL.Func([UpdateProfileInput], [], []),
-  'saveDrawing' : IDL.Func([DrawingId], [], []),
-  'searchDrawings' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [Page], ['query']),
+  'savePost' : IDL.Func([PostId], [], []),
+  'searchPosts' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [Page], ['query']),
+  'searchUsers' : IDL.Func([IDL.Text], [IDL.Vec(UserProfile)], ['query']),
   'unfollowUser' : IDL.Func([UserId], [], []),
-  'unlikeDrawing' : IDL.Func([DrawingId], [], []),
-  'unsaveDrawing' : IDL.Func([DrawingId], [], []),
-  'updateDrawing' : IDL.Func([DrawingId, UpdateDrawingInput], [], []),
+  'unlikePost' : IDL.Func([PostId], [], []),
+  'unsavePost' : IDL.Func([PostId], [], []),
 });
 
 export const idlInitArgs = [];
@@ -149,52 +143,50 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const DrawingId = IDL.Nat;
-  const UserId = IDL.Principal;
   const ExternalBlob = IDL.Vec(IDL.Nat8);
-  const Timestamp = IDL.Int;
-  const UserProfile = IDL.Record({
-    'id' : UserId,
-    'bio' : IDL.Text,
-    'username' : IDL.Text,
-    'avatarBlob' : IDL.Opt(ExternalBlob),
-    'createdAt' : Timestamp,
-    'followerCount' : IDL.Nat,
-    'followingCount' : IDL.Nat,
+  const CreatePostInput = IDL.Record({
+    'title' : IDL.Text,
+    'imageBlob' : ExternalBlob,
+    'isAnonymous' : IDL.Bool,
+    'caption' : IDL.Text,
   });
-  const Drawing = IDL.Record({
-    'id' : DrawingId,
+  const PostId = IDL.Nat;
+  const Timestamp = IDL.Int;
+  const UserId = IDL.Principal;
+  const Post = IDL.Record({
+    'id' : PostId,
     'title' : IDL.Text,
     'likeCount' : IDL.Nat,
     'imageBlob' : ExternalBlob,
     'createdAt' : Timestamp,
-    'tags' : IDL.Vec(IDL.Text),
-    'description' : IDL.Text,
-    'author' : UserId,
+    'isAnonymous' : IDL.Bool,
+    'author' : IDL.Opt(UserId),
     'updatedAt' : Timestamp,
+    'caption' : IDL.Text,
     'savedCount' : IDL.Nat,
   });
   const Page = IDL.Record({
     'total' : IDL.Nat,
     'offset' : IDL.Nat,
     'limit' : IDL.Nat,
-    'items' : IDL.Vec(Drawing),
+    'items' : IDL.Vec(Post),
   });
-  const CreateDrawingInput = IDL.Record({
-    'title' : IDL.Text,
-    'imageBlob' : ExternalBlob,
-    'tags' : IDL.Vec(IDL.Text),
-    'description' : IDL.Text,
+  const UserProfile = IDL.Record({
+    'id' : UserId,
+    'bio' : IDL.Text,
+    'postCount' : IDL.Nat,
+    'displayName' : IDL.Text,
+    'avatarBlob' : IDL.Opt(ExternalBlob),
+    'createdAt' : Timestamp,
+    'followerCount' : IDL.Nat,
+    'followingCount' : IDL.Nat,
+    'isAnonymousByDefault' : IDL.Bool,
   });
   const UpdateProfileInput = IDL.Record({
     'bio' : IDL.Text,
-    'username' : IDL.Text,
+    'displayName' : IDL.Text,
     'avatarBlob' : IDL.Opt(ExternalBlob),
-  });
-  const UpdateDrawingInput = IDL.Record({
-    'title' : IDL.Text,
-    'tags' : IDL.Vec(IDL.Text),
-    'description' : IDL.Text,
+    'isAnonymousByDefault' : IDL.Bool,
   });
   
   return IDL.Service({
@@ -226,37 +218,29 @@ export const idlFactory = ({ IDL }) => {
     '_immutableObjectStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControl' : IDL.Func([], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'deleteDrawing' : IDL.Func([DrawingId], [], []),
+    'createPost' : IDL.Func([CreatePostInput], [Post], []),
+    'deletePost' : IDL.Func([PostId], [], []),
+    'explorePosts' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
     'followUser' : IDL.Func([UserId], [], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getDrawing' : IDL.Func([DrawingId], [IDL.Opt(Drawing)], ['query']),
-    'getLikedBy' : IDL.Func([DrawingId], [IDL.Vec(UserId)], ['query']),
-    'getSavedDrawings' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
-    'getSuggestedDrawings' : IDL.Func([IDL.Nat], [IDL.Vec(Drawing)], ['query']),
-    'getTrendingDrawings' : IDL.Func([IDL.Nat], [IDL.Vec(Drawing)], ['query']),
+    'getPost' : IDL.Func([PostId], [IDL.Opt(Post)], ['query']),
+    'getPostLikeCount' : IDL.Func([PostId], [IDL.Nat], ['query']),
+    'getSavedPosts' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
+    'getUserFollowers' : IDL.Func([UserId], [IDL.Vec(UserProfile)], ['query']),
+    'getUserFollowing' : IDL.Func([UserId], [IDL.Vec(UserProfile)], ['query']),
     'getUserProfile' : IDL.Func([UserId], [IDL.Opt(UserProfile)], ['query']),
+    'homeFeed' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isFollowingUser' : IDL.Func([UserId], [IDL.Bool], ['query']),
-    'likeDrawing' : IDL.Func([DrawingId], [], []),
-    'listDrawings' : IDL.Func([IDL.Nat, IDL.Nat], [Page], ['query']),
-    'listDrawingsByTag' : IDL.Func(
-        [IDL.Text, IDL.Nat, IDL.Nat],
-        [Page],
-        ['query'],
-      ),
-    'postDrawing' : IDL.Func([CreateDrawingInput], [Drawing], []),
+    'likePost' : IDL.Func([PostId], [], []),
     'saveCallerUserProfile' : IDL.Func([UpdateProfileInput], [], []),
-    'saveDrawing' : IDL.Func([DrawingId], [], []),
-    'searchDrawings' : IDL.Func(
-        [IDL.Text, IDL.Nat, IDL.Nat],
-        [Page],
-        ['query'],
-      ),
+    'savePost' : IDL.Func([PostId], [], []),
+    'searchPosts' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [Page], ['query']),
+    'searchUsers' : IDL.Func([IDL.Text], [IDL.Vec(UserProfile)], ['query']),
     'unfollowUser' : IDL.Func([UserId], [], []),
-    'unlikeDrawing' : IDL.Func([DrawingId], [], []),
-    'unsaveDrawing' : IDL.Func([DrawingId], [], []),
-    'updateDrawing' : IDL.Func([DrawingId, UpdateDrawingInput], [], []),
+    'unlikePost' : IDL.Func([PostId], [], []),
+    'unsavePost' : IDL.Func([PostId], [], []),
   });
 };
 

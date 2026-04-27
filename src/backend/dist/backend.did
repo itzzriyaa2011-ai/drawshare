@@ -22,52 +22,49 @@ type UserProfile =
    avatarBlob: opt ExternalBlob;
    bio: text;
    createdAt: Timestamp;
+   displayName: text;
    followerCount: nat;
    followingCount: nat;
    id: UserId;
-   username: text;
+   isAnonymousByDefault: bool;
+   postCount: nat;
  };
 type UserId = principal;
 type UpdateProfileInput = 
  record {
    avatarBlob: opt ExternalBlob;
    bio: text;
-   username: text;
- };
-type UpdateDrawingInput = 
- record {
-   description: text;
-   tags: vec text;
-   title: text;
+   displayName: text;
+   isAnonymousByDefault: bool;
  };
 type Timestamp = int;
+type PostId = nat;
+type Post = 
+ record {
+   author: opt UserId;
+   caption: text;
+   createdAt: Timestamp;
+   id: PostId;
+   imageBlob: ExternalBlob;
+   isAnonymous: bool;
+   likeCount: nat;
+   savedCount: nat;
+   title: text;
+   updatedAt: Timestamp;
+ };
 type Page = 
  record {
-   items: vec Drawing;
+   items: vec Post;
    limit: nat;
    offset: nat;
    total: nat;
  };
 type ExternalBlob = blob;
-type DrawingId = nat;
-type Drawing = 
+type CreatePostInput = 
  record {
-   author: UserId;
-   createdAt: Timestamp;
-   description: text;
-   id: DrawingId;
+   caption: text;
    imageBlob: ExternalBlob;
-   likeCount: nat;
-   savedCount: nat;
-   tags: vec text;
-   title: text;
-   updatedAt: Timestamp;
- };
-type CreateDrawingInput = 
- record {
-   description: text;
-   imageBlob: ExternalBlob;
-   tags: vec text;
+   isAnonymous: bool;
    title: text;
  };
 service : {
@@ -82,28 +79,27 @@ service : {
   _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
   _initializeAccessControl: () -> ();
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
-  deleteDrawing: (id: DrawingId) -> ();
+  createPost: (input: CreatePostInput) -> (Post);
+  deletePost: (id: PostId) -> ();
+  explorePosts: (offset: nat, limit: nat) -> (Page) query;
   followUser: (target: UserId) -> ();
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCallerUserRole: () -> (UserRole) query;
-  getDrawing: (id: DrawingId) -> (opt Drawing) query;
-  getLikedBy: (id: DrawingId) -> (vec UserId) query;
-  getSavedDrawings: (offset: nat, limit: nat) -> (Page) query;
-  getSuggestedDrawings: (limit: nat) -> (vec Drawing) query;
-  getTrendingDrawings: (limit: nat) -> (vec Drawing) query;
+  getPost: (id: PostId) -> (opt Post) query;
+  getPostLikeCount: (id: PostId) -> (nat) query;
+  getSavedPosts: (offset: nat, limit: nat) -> (Page) query;
+  getUserFollowers: (userId: UserId) -> (vec UserProfile) query;
+  getUserFollowing: (userId: UserId) -> (vec UserProfile) query;
   getUserProfile: (userId: UserId) -> (opt UserProfile) query;
+  homeFeed: (offset: nat, limit: nat) -> (Page) query;
   isCallerAdmin: () -> (bool) query;
   isFollowingUser: (target: UserId) -> (bool) query;
-  likeDrawing: (id: DrawingId) -> ();
-  listDrawings: (offset: nat, limit: nat) -> (Page) query;
-  listDrawingsByTag: (tag: text, offset: nat, limit: nat) -> (Page) query;
-  postDrawing: (input: CreateDrawingInput) -> (Drawing);
+  likePost: (id: PostId) -> ();
   saveCallerUserProfile: (input: UpdateProfileInput) -> ();
-  saveDrawing: (id: DrawingId) -> ();
-  searchDrawings: (searchQuery: text, offset: nat, limit: nat) ->
-   (Page) query;
+  savePost: (id: PostId) -> ();
+  searchPosts: (keyword: text, offset: nat, limit: nat) -> (Page) query;
+  searchUsers: (keyword: text) -> (vec UserProfile) query;
   unfollowUser: (target: UserId) -> ();
-  unlikeDrawing: (id: DrawingId) -> ();
-  unsaveDrawing: (id: DrawingId) -> ();
-  updateDrawing: (id: DrawingId, input: UpdateDrawingInput) -> ();
+  unlikePost: (id: PostId) -> ();
+  unsavePost: (id: PostId) -> ();
 }

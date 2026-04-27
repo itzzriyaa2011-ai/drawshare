@@ -2,10 +2,12 @@ import AccessControl "mo:caffeineai-authorization/access-control";
 import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import MixinObjectStorage "mo:caffeineai-object-storage/Mixin";
 import UserLib "lib/users";
-import DrawingLib "lib/drawings";
+import PostLib "lib/posts";
 import UsersMixin "mixins/users-api";
-import DrawingsMixin "mixins/drawings-api";
+import PostsMixin "mixins/posts-api";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   // Authorization state (manages login/roles)
   let accessControlState = AccessControl.initState();
@@ -16,9 +18,9 @@ actor {
 
   // Domain state
   let userState = UserLib.initState();
-  let drawingState = DrawingLib.initState();
+  let postState = PostLib.initState();
 
   // Domain API mixins
   include UsersMixin(accessControlState, userState);
-  include DrawingsMixin(accessControlState, drawingState);
+  include PostsMixin(accessControlState, userState, postState);
 };

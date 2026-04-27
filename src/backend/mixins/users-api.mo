@@ -13,9 +13,6 @@ mixin (
   };
 
   public shared ({ caller }) func saveCallerUserProfile(input : Types.UpdateProfileInput) : async () {
-    if (caller.isAnonymous()) {
-      return;
-    };
     UserLib.saveProfile(userState, caller, input);
   };
 
@@ -23,22 +20,30 @@ mixin (
     UserLib.getProfile(userState, userId);
   };
 
+  // Search users by displayName
+  public query func searchUsers(keyword : Text) : async [Types.UserProfile] {
+    UserLib.searchUsers(userState, keyword);
+  };
+
   // Social — follow/unfollow
   public shared ({ caller }) func followUser(target : Common.UserId) : async () {
-    if (caller.isAnonymous()) {
-      return;
-    };
     UserLib.follow(userState, caller, target);
   };
 
   public shared ({ caller }) func unfollowUser(target : Common.UserId) : async () {
-    if (caller.isAnonymous()) {
-      return;
-    };
     UserLib.unfollow(userState, caller, target);
   };
 
   public query ({ caller }) func isFollowingUser(target : Common.UserId) : async Bool {
     UserLib.isFollowing(userState, caller, target);
+  };
+
+  // Get followers / following lists for any user
+  public query func getUserFollowers(userId : Common.UserId) : async [Types.UserProfile] {
+    UserLib.getFollowers(userState, userId);
+  };
+
+  public query func getUserFollowing(userId : Common.UserId) : async [Types.UserProfile] {
+    UserLib.getFollowing(userState, userId);
   };
 };

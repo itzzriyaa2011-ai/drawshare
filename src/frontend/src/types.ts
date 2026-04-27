@@ -1,33 +1,49 @@
 import type {
-  Drawing,
-  DrawingId,
+  CreatePostInput,
   ExternalBlob,
   Page,
+  Post,
+  PostId,
   Timestamp,
+  UpdateProfileInput,
   UserId,
   UserProfile,
 } from "./backend";
 
 export type {
-  Drawing,
-  DrawingId,
+  Post,
+  PostId,
   Page,
   UserProfile,
   UserId,
   Timestamp,
   ExternalBlob,
+  CreatePostInput,
+  UpdateProfileInput,
 };
 
-export interface DrawingCardData {
-  id: DrawingId;
+export interface PostCardData {
+  id: PostId;
+  imageUrl: string;
   title: string;
+  caption: string;
+  isAnonymous: boolean;
+  authorId?: UserId;
+  authorName?: string;
   likeCount: bigint;
   savedCount: bigint;
-  imageUrl: string;
-  tags: string[];
-  description: string;
-  author: UserId;
   createdAt: Timestamp;
+}
+
+export interface UserProfileData {
+  id: UserId;
+  displayName: string;
+  bio: string;
+  avatarUrl?: string;
+  postCount: bigint;
+  followerCount: bigint;
+  followingCount: bigint;
+  isAnonymousByDefault: boolean;
 }
 
 export interface NavItem {
